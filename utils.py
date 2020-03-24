@@ -10,6 +10,7 @@ def get_harbor_data(filename):
     harborgen.set_index(['datetime'], inplace=True, drop=True)
     return harborgen
   
+#function to load solar data    
 def get_solar_data():
     solargen = pd.read_csv('data/solar_gen_1kwSAM.csv')
     solargen['kwh'] = solargen['AC inverter power | (W)']/1000
