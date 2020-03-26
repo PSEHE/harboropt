@@ -1,7 +1,7 @@
 # Harbor Optimization
 
-This repository contains code for the Harbor Optimization project. 
+This repository contains code and input files for the Harbor optimization. 
 
-To install the required dependencies, run the following command in terminal:
+To install the required python packages, run this command in terminal:
 
->> pip install -r requirements.txt
+> pip install -r requirements.txt
