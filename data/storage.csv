@@ -1,0 +1,2 @@
+resource,legacy,capex ($/MW),fixed ($/MW-year),variable ($/MWh),efficiency,storage_duration (hrs)
+storage_utility_4hr,n,96750,0,30,1,4

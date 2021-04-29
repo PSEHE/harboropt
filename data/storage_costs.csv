@@ -1,5 +1,0 @@
-resource,capex ($/MW),fixed ($/MW-year),variable($/MWh),efficiency
-storage_utility,1287000.00,2750.00,88.00,0.90
-storage_ci,1287000.00,2750.00,88.00,0.90
-storage_res,1287000.00,2750.00,88.00,0.90
-storage_diesel,1287000.00,2750.00,88.00,0.90
