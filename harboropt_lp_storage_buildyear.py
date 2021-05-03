@@ -10,13 +10,14 @@ import utils
         
 class DOSCOE(object):
     
-    def __init__(self, initial_state_of_charge = 0, storage_life = 30, timespan = 30,
-                 gas_fuel_cost=4, discount_rate = 0.06, cost=1, build_years = 10, capex_decline = 0.05):
+    def __init__(self, initial_state_of_charge = 0, storage_life = 15, timespan = 30,
+                 gas_fuel_cost=4, discount_rate = 0.06, cost=1, build_years = 1, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7):
         
         self.initial_state_of_charge = initial_state_of_charge
         self.timespan = timespan
         self.build_years = build_years
-        self.capex_decline = capex_decline
+        self.resilience_incentive_per_mwh = storage_resilience_incentive_per_kwh * 1000
+        self.resilient_storage_grid_fraction = resilient_storage_grid_fraction
         
         #Rate that money decays per year.
         self.discount_rate = discount_rate
@@ -88,8 +89,6 @@ class DOSCOE(object):
                     fulfill_demand = self.solver.Constraint(profiles.loc[ind,'DEMAND'], self.solver.infinity())
                 else:
                     fulfill_demand = self.solver.Constraint(0, self.solver.infinity())
-                    
-                
 
                 #Initialize hydro power limit constraint: hydro resources cannot exceed the following power supply limit in each hour.
                 hydro_power_limit = self.solver.Constraint(0, 9594.8)
@@ -98,7 +97,7 @@ class DOSCOE(object):
                 for resource in self.storage.index:
 
                     storage_duration = self.storage.loc[resource, 'storage_duration (hrs)']
-                    efficiency = self.storage.loc[resource, 'efficiency']
+                    efficiency = self.storage.loc[resource, 'efficiency']    
 
                     #Create hourly charge and discharge variables for each storage resource in each build year.
                     charge= self.solver.NumVar(0, self.solver.infinity(), '_charge_year'+ str(year) + '_hour' + str(ind))
@@ -108,29 +107,42 @@ class DOSCOE(object):
                     variable_cost = self.storage.loc[resource,'variable ($/MWh)'] #+whole_grid_emissions.loc[ind,'TOTAL/MWH']
                     objective.SetCoefficient(charge, variable_cost)
 
-                    #Limit hourly charge and discharge variables to storage max power (MW). Sum storage capacity from previous and current build years to fix max power. In first hour of the year, discharge is limited to the storage capacity built in previous years, since the new build hasn't had time to charge (starts at 0 charge).
+                    #Limit hourly charge and discharge variables to storage max power (MW). Sum storage capacity from previous and current build years to set max power.
                     max_charge= self.solver.Constraint(0, self.solver.infinity())
                     storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
+        
                     for i, var in enumerate(storage_capacity_cumulative):
-                        max_charge.SetCoefficient(var, 1)
+                        if self.storage.loc[resource, 'resilient'] == 'y':
+                            #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
+                            max_charge.SetCoefficient(var, self.resilient_storage_grid_fraction)
+                        else: 
+                            max_charge.SetCoefficient(var, 1)
                     max_charge.SetCoefficient(charge, -1)
 
                     if year == 0 and ind == 0:
                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
-                        max_discharge.SetCoefficient(self.storage_capacity_vars[resource][0], 1)
+                        var = self.storage_capacity_vars[resource][0]
+                        if self.storage.loc[resource, 'resilient'] == 'y':
+                            #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
+                            max_discharge.SetCoefficient(var, self.resilient_storage_grid_fraction)
+                        else: 
+                            max_discharge.SetCoefficient(var, 1)
                         max_discharge.SetCoefficient(discharge, -1)
+                        
 #                     elif year > 0 and ind == 0:
 #                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
 #                         storage_capacity_previous_years = self.storage_capacity_vars[resource][0:year]
 #                         for i, var in enumerate(storage_capacity_previous_years):
 #                             max_discharge.SetCoefficient(var, 1)
 #                         max_discharge.SetCoefficient(discharge, -1)
+
                     elif ind > 0:
                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
                         storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
                         for i, var in enumerate(storage_capacity_cumulative):
                             max_discharge.SetCoefficient(var, 1)
                         max_discharge.SetCoefficient(discharge, -1)
+                    
                         
                     #Keep track of hourly charge and discharge variables by appending to lists for each storage resource.
                     self.storage_charge_vars[resource].append(charge)
@@ -235,17 +247,36 @@ class DOSCOE(object):
             for resource in self.disp.index:
                 capacity = self.capacity_vars[resource][year]
                 capex_initial = self.resources.loc[resource, 'capex']
-                capex_now = capex_initial* pow((1-self.capex_decline), year)
+                capex_decline = self.resources.loc[resource, 'annual capex decline']
+                capex_now = capex_initial* pow((1-capex_decline), year)
                 fixed = self.resources.loc[resource, 'fixed'] * self.discounting_factor[year]
                 capex_fixed = capex_now + fixed
                 objective.SetCoefficient(capacity, capex_fixed)
 
             #Outside of hourly loop, add capex costs to objective function for every storage resource.
             for resource in self.storage.index:
-                #Calculate present capex cost based on year and capex decline.
-                capex_initial = self.storage.loc[resource, 'capex ($/MW)']
-                capex_now = capex_initial* pow((1-self.capex_decline), year)
-                fixed = self.storage.loc[resource, 'fixed ($/MW-year)'] * self.discounting_factor[year]
+                capex_decline = self.storage.loc[resource, 'annual capex decline']
+                
+                #For resilient storage, subtract resilience incentive from capex cost.
+                if self.storage.loc[resource, 'resilient'] == 'y':
+                    storage_duration = self.storage.loc[resource, 'storage_duration (hrs)']
+                    incentive_per_mwh = self.resilience_incentive_per_mwh
+                    incentive_per_mw = incentive_per_mwh * storage_duration
+                    
+                    #Subtract resilience incentive from storage capex cost.
+                    capex_initial = self.storage.loc[resource, 'capex ($/MW)']
+                    
+                    #Calculate present capex cost based on year and capex decline.
+                    capex_now = (capex_initial* pow((1-capex_decline), year)) -  incentive_per_mw
+                    if capex_now < 0:
+                        capex_now = 0
+                    fixed = self.storage.loc[resource, 'fixed ($/MW-year)'] * self.discounting_factor[year]
+                    
+                else:
+                    #Calculate present capex cost based on year and capex decline.
+                    capex_initial = self.storage.loc[resource, 'capex ($/MW)']
+                    capex_now = capex_initial* pow((1-capex_decline), year)
+                    fixed = self.storage.loc[resource, 'fixed ($/MW-year)'] * self.discounting_factor[year]
 
                 #Set capex cost for storage built in this year.
                 objective.SetCoefficient(self.storage_capacity_vars[resource][year], capex_now + fixed)
@@ -256,7 +287,8 @@ class DOSCOE(object):
                 capacity = self.capacity_vars[resource][year]
                 fixed = self.nondisp.loc[resource, 'fixed'] * self.discounting_factor[year]
                 capex_initial = self.resources.loc[resource, 'capex']
-                capex_now = capex_initial* pow((1-self.capex_decline), year) 
+                capex_decline = self.resources.loc[resource, 'annual capex decline']
+                capex_now = capex_initial* pow((1-capex_decline), year) 
                 capex_fixed = capex_now + fixed
 
                 profile_max = max(profiles[resource])
@@ -309,7 +341,7 @@ class DOSCOE(object):
         
     def _setup_storage(self):
         storage = pd.read_csv('data/storage.csv')
-        num_columns = storage.columns[2:]
+        num_columns = storage.columns[3:]
         storage[num_columns] = storage[num_columns].astype(float)
         storage = storage.set_index('resource')
         
