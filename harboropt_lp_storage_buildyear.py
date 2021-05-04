@@ -7,11 +7,15 @@ from ortools.linear_solver import pywraplp
 
 import utils
 
+##### TO-DO: 
+##### 2.Incorporate timespan of storage and apply discount factor to replacement capacity costs (ie. every 15 years). 
+##### 3. Require storage to only charge from renewable sources or during off-peak times? See if value of avoided emissions incentivizes this.
+##### 4. Split up results functions into specific functions (ex. total_gen, storage_net_source, gen_fractions, curtailment).
         
-class DOSCOE(object):
+class LinearProgram(object):
     
     def __init__(self, initial_state_of_charge = 0, storage_life = 15, timespan = 30,
-                 gas_fuel_cost=4, discount_rate = 0.06, cost=1, build_years = 1, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7):
+                 gas_fuel_cost=8, discount_rate = 0.06, cost=1, build_years = 1, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7):
         
         self.initial_state_of_charge = initial_state_of_charge
         self.timespan = timespan
@@ -107,13 +111,13 @@ class DOSCOE(object):
                     variable_cost = self.storage.loc[resource,'variable ($/MWh)'] #+whole_grid_emissions.loc[ind,'TOTAL/MWH']
                     objective.SetCoefficient(charge, variable_cost)
 
-                    #Limit hourly charge and discharge variables to storage max power (MW). Sum storage capacity from previous and current build years to set max power.
+                    #Limit hourly charge and discharge variables to storage max power (MW). 
+                    #Sum storage capacity from previous and current build years to set max power.
                     max_charge= self.solver.Constraint(0, self.solver.infinity())
                     storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
-        
                     for i, var in enumerate(storage_capacity_cumulative):
                         if self.storage.loc[resource, 'resilient'] == 'y':
-                            #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
+                            #For resilient storage, limit max charge to the fraction of capacity set aside for the grid.
                             max_charge.SetCoefficient(var, self.resilient_storage_grid_fraction)
                         else: 
                             max_charge.SetCoefficient(var, 1)
@@ -123,7 +127,7 @@ class DOSCOE(object):
                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
                         var = self.storage_capacity_vars[resource][0]
                         if self.storage.loc[resource, 'resilient'] == 'y':
-                            #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
+                            #For resilient storage, limit max discharge to the fraction of capacity set aside for the grid.
                             max_discharge.SetCoefficient(var, self.resilient_storage_grid_fraction)
                         else: 
                             max_discharge.SetCoefficient(var, 1)
@@ -140,7 +144,11 @@ class DOSCOE(object):
                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
                         storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
                         for i, var in enumerate(storage_capacity_cumulative):
-                            max_discharge.SetCoefficient(var, 1)
+                            if self.storage.loc[resource, 'resilient'] == 'y':
+                            #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
+                                max_discharge.SetCoefficient(var, self.resilient_storage_grid_fraction)
+                            else: 
+                                max_discharge.SetCoefficient(var, 1)
                         max_discharge.SetCoefficient(discharge, -1)
                     
                         
@@ -184,7 +192,11 @@ class DOSCOE(object):
                     max_storage= self.solver.Constraint(0, self.solver.infinity())
                     storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
                     for i, var in enumerate(storage_capacity_cumulative):
-                        max_storage.SetCoefficient(var, storage_duration)
+                        if self.storage.loc[resource, 'resilient'] == 'y':
+                            #For resilient storage, limit max storage to the fraction of capacity set aside for the grid * storage_duration.
+                            max_storage.SetCoefficient(var, self.resilient_storage_grid_fraction*storage_duration)
+                        else: 
+                            max_storage.SetCoefficient(var, storage_duration)
                     max_storage.SetCoefficient(state_of_charge, -1)
 
                     #Creates constraint ensuring that no net energy is supplied by storage (ending state of charge is equal to initial state of charge).

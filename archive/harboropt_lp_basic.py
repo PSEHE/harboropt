@@ -147,7 +147,7 @@ class DOSCOE(object):
     
     
     def _setup_resources(self):
-        resources = pd.read_csv('data/doscoe_resources.csv')
+        resources = pd.read_csv('..data/doscoe_resources.csv')
 #         exclusion_str = []
 #         for i in range(3):
 #             if not i == self.cost:
@@ -195,7 +195,7 @@ class DOSCOE(object):
             
     def gen_results(self):
 
-        profiles = pd.read_csv('data/doscoe_profiles.csv')
+        profiles = pd.read_csv('..data/doscoe_profiles.csv')
         #Sum total annual generation across all resources.
         total_gen = 0
         for resource in self.disp.index:

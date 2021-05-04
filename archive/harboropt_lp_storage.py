@@ -67,7 +67,7 @@ class DOSCOE(object):
         objective = self.solver.Objective()
         
         #Read in demand and nondispatchable resource profiles.
-        profiles = pd.read_csv('data/doscoe_profiles.csv')
+        profiles = pd.read_csv('..data/doscoe_profiles.csv')
         
         #Initialize hydro energy limit constraint: hydro resources cannot exceed the following energy supply limit in each year.
         hydro_energy_limit = self.solver.Constraint(0, 13808000)
@@ -251,7 +251,7 @@ class DOSCOE(object):
     
     
     def _setup_resources(self):
-        resources = pd.read_csv('data/doscoe_resources.csv')
+        resources = pd.read_csv('..data/doscoe_resources.csv')
 #         exclusion_str = []
 #         for i in range(3):
 #             if not i == self.cost:
@@ -265,7 +265,7 @@ class DOSCOE(object):
 
         
     def _setup_storage(self):
-        storage = pd.read_csv('data/storage.csv')
+        storage = pd.read_csv('..data/storage.csv')
         num_columns = storage.columns[2:]
         storage[num_columns] = storage[num_columns].astype(float)
         storage = storage.set_index('resource')
@@ -319,7 +319,7 @@ class DOSCOE(object):
             
     def gen_results(self):
 
-        profiles = pd.read_csv('data/doscoe_profiles.csv')
+        profiles = pd.read_csv('..data/doscoe_profiles.csv')
         #Sum total annual generation across all resources.
         total_gen = 0
         for resource in self.disp.index:
