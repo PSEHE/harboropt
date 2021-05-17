@@ -3,3 +3,4 @@ storage_utility_2hr,n,n,900000,0.05,40000,0,0.85,2
 storage_utility_4hr,n,n,1600000,0.05,40000,0,0.85,4
 storage_utility_6hr,n,n,2250000,0.05,40000,0,0.85,6
 resilient_standalone_storage_4hr,y,n,1600000,0.05,40000,0,0.85,4
+diesel_genset_replacement_storage_4hr,y,n,1600000,0.05,40000,0,0.85,4
