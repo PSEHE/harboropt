@@ -1,0 +1,243 @@
+Sector,PA,FCZ,BType_Des,End.Use,Scen,AAEE.Case,2021
+Commercial,LADWP,FCZ16,College,Cooking,Mid,Base,1.086074649
+Commercial,LADWP,FCZ16,College,Cooling,Mid,Base,52.74868517
+Commercial,LADWP,FCZ16,College,Heating,Mid,Base,11.89740637
+Commercial,LADWP,FCZ16,College,IndoorLighting,Mid,Base,45.20956793
+Commercial,LADWP,FCZ16,College,Miscellaneous,Mid,Base,63.51499088
+Commercial,LADWP,FCZ16,College,OfficeEquipment,Mid,Base,6.892821964
+Commercial,LADWP,FCZ16,College,OutdoorLighting,Mid,Base,3.950293785
+Commercial,LADWP,FCZ16,College,Refrigeration,Mid,Base,6.073595052
+Commercial,LADWP,FCZ16,College,Residual,Mid,Base,226.7776487
+Commercial,LADWP,FCZ16,College,Ventilation,Mid,Base,30.524435
+Commercial,LADWP,FCZ16,College,WaterHeating,Mid,Base,4.879777897
+Commercial,LADWP,FCZ16,Food,Cooking,Mid,Base,0.331094709
+Commercial,LADWP,FCZ16,Food,Cooling,Mid,Base,3.696843712
+Commercial,LADWP,FCZ16,Food,Heating,Mid,Base,1.846507264
+Commercial,LADWP,FCZ16,Food,IndoorLighting,Mid,Base,60.60591154
+Commercial,LADWP,FCZ16,Food,Miscellaneous,Mid,Base,17.21875095
+Commercial,LADWP,FCZ16,Food,OfficeEquipment,Mid,Base,1.435546503
+Commercial,LADWP,FCZ16,Food,OutdoorLighting,Mid,Base,16.21982517
+Commercial,LADWP,FCZ16,Food,Refrigeration,Mid,Base,143.2396226
+Commercial,LADWP,FCZ16,Food,Residual,Mid,Base,258.9634024
+Commercial,LADWP,FCZ16,Food,Ventilation,Mid,Base,14.11924841
+Commercial,LADWP,FCZ16,Food,WaterHeating,Mid,Base,0.250051516
+Commercial,LADWP,FCZ16,Health Care,Cooking,Mid,Base,1.337028883
+Commercial,LADWP,FCZ16,Health Care,Cooling,Mid,Base,124.1637691
+Commercial,LADWP,FCZ16,Health Care,Heating,Mid,Base,8.790605088
+Commercial,LADWP,FCZ16,Health Care,IndoorLighting,Mid,Base,115.1926001
+Commercial,LADWP,FCZ16,Health Care,Miscellaneous,Mid,Base,267.0377274
+Commercial,LADWP,FCZ16,Health Care,OfficeEquipment,Mid,Base,42.6421754
+Commercial,LADWP,FCZ16,Health Care,OutdoorLighting,Mid,Base,4.596526553
+Commercial,LADWP,FCZ16,Health Care,Refrigeration,Mid,Base,4.317033575
+Commercial,LADWP,FCZ16,Health Care,Residual,Mid,Base,605.4075692
+Commercial,LADWP,FCZ16,Health Care,Ventilation,Mid,Base,32.98368409
+Commercial,LADWP,FCZ16,Health Care,WaterHeating,Mid,Base,4.346419
+Commercial,LADWP,FCZ16,Hotel,Cooking,Mid,Base,0.725753502
+Commercial,LADWP,FCZ16,Hotel,Cooling,Mid,Base,28.50833564
+Commercial,LADWP,FCZ16,Hotel,Heating,Mid,Base,37.45751912
+Commercial,LADWP,FCZ16,Hotel,IndoorLighting,Mid,Base,28.16663103
+Commercial,LADWP,FCZ16,Hotel,Miscellaneous,Mid,Base,27.65328798
+Commercial,LADWP,FCZ16,Hotel,OfficeEquipment,Mid,Base,0.295925624
+Commercial,LADWP,FCZ16,Hotel,OutdoorLighting,Mid,Base,7.030695733
+Commercial,LADWP,FCZ16,Hotel,Refrigeration,Mid,Base,12.14749032
+Commercial,LADWP,FCZ16,Hotel,Residual,Mid,Base,153.6551694
+Commercial,LADWP,FCZ16,Hotel,Ventilation,Mid,Base,9.666164407
+Commercial,LADWP,FCZ16,Hotel,WaterHeating,Mid,Base,2.003366032
+Commercial,LADWP,FCZ16,Miscellaneous,Cooking,Mid,Base,0.514874634
+Commercial,LADWP,FCZ16,Miscellaneous,Cooling,Mid,Base,83.96890428
+Commercial,LADWP,FCZ16,Miscellaneous,Heating,Mid,Base,16.29416383
+Commercial,LADWP,FCZ16,Miscellaneous,IndoorLighting,Mid,Base,106.8462997
+Commercial,LADWP,FCZ16,Miscellaneous,Miscellaneous,Mid,Base,96.91400725
+Commercial,LADWP,FCZ16,Miscellaneous,OfficeEquipment,Mid,Base,24.17231986
+Commercial,LADWP,FCZ16,Miscellaneous,OutdoorLighting,Mid,Base,40.28929383
+Commercial,LADWP,FCZ16,Miscellaneous,Refrigeration,Mid,Base,1.705615599
+Commercial,LADWP,FCZ16,Miscellaneous,Residual,Mid,Base,414.4368105
+Commercial,LADWP,FCZ16,Miscellaneous,Ventilation,Mid,Base,40.23780743
+Commercial,LADWP,FCZ16,Miscellaneous,WaterHeating,Mid,Base,3.493524105
+Commercial,LADWP,FCZ16,Office,Cooking,Mid,Base,0.840736405
+Commercial,LADWP,FCZ16,Office,Cooling,Mid,Base,241.5698417
+Commercial,LADWP,FCZ16,Office,Heating,Mid,Base,29.75621818
+Commercial,LADWP,FCZ16,Office,IndoorLighting,Mid,Base,420.255455
+Commercial,LADWP,FCZ16,Office,Miscellaneous,Mid,Base,239.218452
+Commercial,LADWP,FCZ16,Office,OfficeEquipment,Mid,Base,93.89969115
+Commercial,LADWP,FCZ16,Office,OutdoorLighting,Mid,Base,106.3862219
+Commercial,LADWP,FCZ16,Office,Refrigeration,Mid,Base,1.192051868
+Commercial,LADWP,FCZ16,Office,Residual,Mid,Base,1281.898556
+Commercial,LADWP,FCZ16,Office,Ventilation,Mid,Base,144.8105835
+Commercial,LADWP,FCZ16,Office,WaterHeating,Mid,Base,3.969304423
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Cooking,Mid,Base,0.000418226
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Cooling,Mid,Base,0.101506297
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Heating,Mid,Base,0.000128552
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,IndoorLighting,Mid,Base,2.17188397
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Miscellaneous,Mid,Base,3.009732615
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,OfficeEquipment,Mid,Base,0.016393855
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,OutdoorLighting,Mid,Base,0.209208044
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Refrigeration,Mid,Base,20.33182995
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Residual,Mid,Base,25.92775367
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,Ventilation,Mid,Base,0.07563449
+Commercial,LADWP,FCZ16,Refrigerated Warehouse,WaterHeating,Mid,Base,0.011017667
+Commercial,LADWP,FCZ16,Restaurant,Cooking,Mid,Base,11.18170833
+Commercial,LADWP,FCZ16,Restaurant,Cooling,Mid,Base,26.75154591
+Commercial,LADWP,FCZ16,Restaurant,Heating,Mid,Base,2.281473833
+Commercial,LADWP,FCZ16,Restaurant,IndoorLighting,Mid,Base,38.74066147
+Commercial,LADWP,FCZ16,Restaurant,Miscellaneous,Mid,Base,76.50857821
+Commercial,LADWP,FCZ16,Restaurant,OfficeEquipment,Mid,Base,0.208972374
+Commercial,LADWP,FCZ16,Restaurant,OutdoorLighting,Mid,Base,28.68789288
+Commercial,LADWP,FCZ16,Restaurant,Refrigeration,Mid,Base,53.55182668
+Commercial,LADWP,FCZ16,Restaurant,Residual,Mid,Base,274.4223848
+Commercial,LADWP,FCZ16,Restaurant,Ventilation,Mid,Base,36.2122911
+Commercial,LADWP,FCZ16,Restaurant,WaterHeating,Mid,Base,0.297434042
+Commercial,LADWP,FCZ16,Retail,Cooking,Mid,Base,1.104765281
+Commercial,LADWP,FCZ16,Retail,Cooling,Mid,Base,49.50639538
+Commercial,LADWP,FCZ16,Retail,Heating,Mid,Base,1.168658345
+Commercial,LADWP,FCZ16,Retail,IndoorLighting,Mid,Base,136.7555432
+Commercial,LADWP,FCZ16,Retail,Miscellaneous,Mid,Base,117.7638165
+Commercial,LADWP,FCZ16,Retail,OfficeEquipment,Mid,Base,5.338872334
+Commercial,LADWP,FCZ16,Retail,OutdoorLighting,Mid,Base,41.47434485
+Commercial,LADWP,FCZ16,Retail,Refrigeration,Mid,Base,6.631884611
+Commercial,LADWP,FCZ16,Retail,Residual,Mid,Base,399.7270698
+Commercial,LADWP,FCZ16,Retail,Ventilation,Mid,Base,38.98101932
+Commercial,LADWP,FCZ16,Retail,WaterHeating,Mid,Base,1.001770004
+Commercial,LADWP,FCZ16,School,Cooking,Mid,Base,0.995363464
+Commercial,LADWP,FCZ16,School,Cooling,Mid,Base,17.20614019
+Commercial,LADWP,FCZ16,School,Heating,Mid,Base,1.55832443
+Commercial,LADWP,FCZ16,School,IndoorLighting,Mid,Base,47.93032607
+Commercial,LADWP,FCZ16,School,Miscellaneous,Mid,Base,22.31875204
+Commercial,LADWP,FCZ16,School,OfficeEquipment,Mid,Base,1.548857345
+Commercial,LADWP,FCZ16,School,OutdoorLighting,Mid,Base,20.84541243
+Commercial,LADWP,FCZ16,School,Refrigeration,Mid,Base,1.595911387
+Commercial,LADWP,FCZ16,School,Residual,Mid,Base,128.8438359
+Commercial,LADWP,FCZ16,School,Ventilation,Mid,Base,13.80048899
+Commercial,LADWP,FCZ16,School,WaterHeating,Mid,Base,1.044259513
+Commercial,LADWP,FCZ16,Warehouse,Cooking,Mid,Base,0.011515911
+Commercial,LADWP,FCZ16,Warehouse,Cooling,Mid,Base,4.824777047
+Commercial,LADWP,FCZ16,Warehouse,Heating,Mid,Base,0.85722593
+Commercial,LADWP,FCZ16,Warehouse,IndoorLighting,Mid,Base,92.68357791
+Commercial,LADWP,FCZ16,Warehouse,Miscellaneous,Mid,Base,80.34156027
+Commercial,LADWP,FCZ16,Warehouse,OfficeEquipment,Mid,Base,1.473106987
+Commercial,LADWP,FCZ16,Warehouse,OutdoorLighting,Mid,Base,7.289183037
+Commercial,LADWP,FCZ16,Warehouse,Refrigeration,Mid,Base,0
+Commercial,LADWP,FCZ16,Warehouse,Residual,Mid,Base,193.7875905
+Commercial,LADWP,FCZ16,Warehouse,Ventilation,Mid,Base,6.015613047
+Commercial,LADWP,FCZ16,Warehouse,WaterHeating,Mid,Base,0.291030406
+Commercial,LADWP,FCZ17,College,Cooking,Mid,Base,1.910525828
+Commercial,LADWP,FCZ17,College,Cooling,Mid,Base,110.5549952
+Commercial,LADWP,FCZ17,College,Heating,Mid,Base,11.45433723
+Commercial,LADWP,FCZ17,College,IndoorLighting,Mid,Base,80.92094798
+Commercial,LADWP,FCZ17,College,Miscellaneous,Mid,Base,105.1803137
+Commercial,LADWP,FCZ17,College,OfficeEquipment,Mid,Base,11.42250069
+Commercial,LADWP,FCZ17,College,OutdoorLighting,Mid,Base,6.918504933
+Commercial,LADWP,FCZ17,College,Refrigeration,Mid,Base,10.20847238
+Commercial,LADWP,FCZ17,College,Residual,Mid,Base,402.406268
+Commercial,LADWP,FCZ17,College,Ventilation,Mid,Base,57.97796754
+Commercial,LADWP,FCZ17,College,WaterHeating,Mid,Base,5.857702558
+Commercial,LADWP,FCZ17,Food,Cooking,Mid,Base,0.682107569
+Commercial,LADWP,FCZ17,Food,Cooling,Mid,Base,13.86104943
+Commercial,LADWP,FCZ17,Food,Heating,Mid,Base,3.382084232
+Commercial,LADWP,FCZ17,Food,IndoorLighting,Mid,Base,119.5312191
+Commercial,LADWP,FCZ17,Food,Miscellaneous,Mid,Base,35.53476958
+Commercial,LADWP,FCZ17,Food,OfficeEquipment,Mid,Base,2.903921575
+Commercial,LADWP,FCZ17,Food,OutdoorLighting,Mid,Base,33.1901154
+Commercial,LADWP,FCZ17,Food,Refrigeration,Mid,Base,294.4554832
+Commercial,LADWP,FCZ17,Food,Residual,Mid,Base,531.8384568
+Commercial,LADWP,FCZ17,Food,Ventilation,Mid,Base,27.82763843
+Commercial,LADWP,FCZ17,Food,WaterHeating,Mid,Base,0.470068315
+Commercial,LADWP,FCZ17,Health Care,Cooking,Mid,Base,3.039985904
+Commercial,LADWP,FCZ17,Health Care,Cooling,Mid,Base,332.3809374
+Commercial,LADWP,FCZ17,Health Care,Heating,Mid,Base,16.29810929
+Commercial,LADWP,FCZ17,Health Care,IndoorLighting,Mid,Base,258.0900891
+Commercial,LADWP,FCZ17,Health Care,Miscellaneous,Mid,Base,556.364549
+Commercial,LADWP,FCZ17,Health Care,OfficeEquipment,Mid,Base,88.85689801
+Commercial,LADWP,FCZ17,Health Care,OutdoorLighting,Mid,Base,10.4033003
+Commercial,LADWP,FCZ17,Health Care,Refrigeration,Mid,Base,10.08394864
+Commercial,LADWP,FCZ17,Health Care,Residual,Mid,Base,1364.231369
+Commercial,LADWP,FCZ17,Health Care,Ventilation,Mid,Base,77.21311743
+Commercial,LADWP,FCZ17,Health Care,WaterHeating,Mid,Base,11.50043425
+Commercial,LADWP,FCZ17,Hotel,Cooking,Mid,Base,1.549129048
+Commercial,LADWP,FCZ17,Hotel,Cooling,Mid,Base,67.09405827
+Commercial,LADWP,FCZ17,Hotel,Heating,Mid,Base,69.22929959
+Commercial,LADWP,FCZ17,Hotel,IndoorLighting,Mid,Base,58.39901307
+Commercial,LADWP,FCZ17,Hotel,Miscellaneous,Mid,Base,58.41145301
+Commercial,LADWP,FCZ17,Hotel,OfficeEquipment,Mid,Base,0.625572392
+Commercial,LADWP,FCZ17,Hotel,OutdoorLighting,Mid,Base,14.81554171
+Commercial,LADWP,FCZ17,Hotel,Refrigeration,Mid,Base,26.51751827
+Commercial,LADWP,FCZ17,Hotel,Residual,Mid,Base,322.2723242
+Commercial,LADWP,FCZ17,Hotel,Ventilation,Mid,Base,21.05407704
+Commercial,LADWP,FCZ17,Hotel,WaterHeating,Mid,Base,4.576661838
+Commercial,LADWP,FCZ17,Miscellaneous,Cooking,Mid,Base,1.12851547
+Commercial,LADWP,FCZ17,Miscellaneous,Cooling,Mid,Base,234.868011
+Commercial,LADWP,FCZ17,Miscellaneous,Heating,Mid,Base,25.42043538
+Commercial,LADWP,FCZ17,Miscellaneous,IndoorLighting,Mid,Base,230.6316393
+Commercial,LADWP,FCZ17,Miscellaneous,Miscellaneous,Mid,Base,208.1491877
+Commercial,LADWP,FCZ17,Miscellaneous,OfficeEquipment,Mid,Base,51.92311796
+Commercial,LADWP,FCZ17,Miscellaneous,OutdoorLighting,Mid,Base,87.5943223
+Commercial,LADWP,FCZ17,Miscellaneous,Refrigeration,Mid,Base,3.779870053
+Commercial,LADWP,FCZ17,Miscellaneous,Residual,Mid,Base,947.9512797
+Commercial,LADWP,FCZ17,Miscellaneous,Ventilation,Mid,Base,96.75353669
+Commercial,LADWP,FCZ17,Miscellaneous,WaterHeating,Mid,Base,7.702643817
+Commercial,LADWP,FCZ17,Office,Cooking,Mid,Base,1.722381454
+Commercial,LADWP,FCZ17,Office,Cooling,Mid,Base,513.3324296
+Commercial,LADWP,FCZ17,Office,Heating,Mid,Base,63.92223226
+Commercial,LADWP,FCZ17,Office,IndoorLighting,Mid,Base,862.2343293
+Commercial,LADWP,FCZ17,Office,Miscellaneous,Mid,Base,475.8413977
+Commercial,LADWP,FCZ17,Office,OfficeEquipment,Mid,Base,186.5973892
+Commercial,LADWP,FCZ17,Office,OutdoorLighting,Mid,Base,217.767575
+Commercial,LADWP,FCZ17,Office,Refrigeration,Mid,Base,2.416702685
+Commercial,LADWP,FCZ17,Office,Residual,Mid,Base,2639.290221
+Commercial,LADWP,FCZ17,Office,Ventilation,Mid,Base,306.831055
+Commercial,LADWP,FCZ17,Office,WaterHeating,Mid,Base,8.624728817
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Cooking,Mid,Base,0.000779299
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Cooling,Mid,Base,0.255571589
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Heating,Mid,Base,0.000605281
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,IndoorLighting,Mid,Base,4.050390843
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Miscellaneous,Mid,Base,5.53568952
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,OfficeEquipment,Mid,Base,0.030173281
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,OutdoorLighting,Mid,Base,0.386270285
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Refrigeration,Mid,Base,37.39287499
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Residual,Mid,Base,47.81787818
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,Ventilation,Mid,Base,0.145127166
+Commercial,LADWP,FCZ17,Refrigerated Warehouse,WaterHeating,Mid,Base,0.02039593
+Commercial,LADWP,FCZ17,Restaurant,Cooking,Mid,Base,26.14597794
+Commercial,LADWP,FCZ17,Restaurant,Cooling,Mid,Base,73.6517135
+Commercial,LADWP,FCZ17,Restaurant,Heating,Mid,Base,4.958778062
+Commercial,LADWP,FCZ17,Restaurant,IndoorLighting,Mid,Base,81.22244316
+Commercial,LADWP,FCZ17,Restaurant,Miscellaneous,Mid,Base,155.1855677
+Commercial,LADWP,FCZ17,Restaurant,OfficeEquipment,Mid,Base,0.423872292
+Commercial,LADWP,FCZ17,Restaurant,OutdoorLighting,Mid,Base,61.7694453
+Commercial,LADWP,FCZ17,Restaurant,Refrigeration,Mid,Base,119.5180805
+Commercial,LADWP,FCZ17,Restaurant,Residual,Mid,Base,604.0084096
+Commercial,LADWP,FCZ17,Restaurant,Ventilation,Mid,Base,80.5964078
+Commercial,LADWP,FCZ17,Restaurant,WaterHeating,Mid,Base,0.536123361
+Commercial,LADWP,FCZ17,Retail,Cooking,Mid,Base,2.396700947
+Commercial,LADWP,FCZ17,Retail,Cooling,Mid,Base,132.0870342
+Commercial,LADWP,FCZ17,Retail,Heating,Mid,Base,1.060255512
+Commercial,LADWP,FCZ17,Retail,IndoorLighting,Mid,Base,285.122567
+Commercial,LADWP,FCZ17,Retail,Miscellaneous,Mid,Base,250.3926979
+Commercial,LADWP,FCZ17,Retail,OfficeEquipment,Mid,Base,11.3522167
+Commercial,LADWP,FCZ17,Retail,OutdoorLighting,Mid,Base,89.51989643
+Commercial,LADWP,FCZ17,Retail,Refrigeration,Mid,Base,14.56504916
+Commercial,LADWP,FCZ17,Retail,Residual,Mid,Base,877.3045775
+Commercial,LADWP,FCZ17,Retail,Ventilation,Mid,Base,88.4572717
+Commercial,LADWP,FCZ17,Retail,WaterHeating,Mid,Base,2.35088795
+Commercial,LADWP,FCZ17,School,Cooking,Mid,Base,1.943876054
+Commercial,LADWP,FCZ17,School,Cooling,Mid,Base,40.03278775
+Commercial,LADWP,FCZ17,School,Heating,Mid,Base,3.008634523
+Commercial,LADWP,FCZ17,School,IndoorLighting,Mid,Base,96.01195346
+Commercial,LADWP,FCZ17,School,Miscellaneous,Mid,Base,40.34253497
+Commercial,LADWP,FCZ17,School,OfficeEquipment,Mid,Base,2.806637141
+Commercial,LADWP,FCZ17,School,OutdoorLighting,Mid,Base,40.64756683
+Commercial,LADWP,FCZ17,School,Refrigeration,Mid,Base,2.952909311
+Commercial,LADWP,FCZ17,School,Residual,Mid,Base,262.1703861
+Commercial,LADWP,FCZ17,School,Ventilation,Mid,Base,32.9787013
+Commercial,LADWP,FCZ17,School,WaterHeating,Mid,Base,1.444784796
+Commercial,LADWP,FCZ17,Warehouse,Cooking,Mid,Base,0.023725884
+Commercial,LADWP,FCZ17,Warehouse,Cooling,Mid,Base,12.12613795
+Commercial,LADWP,FCZ17,Warehouse,Heating,Mid,Base,1.6578547
+Commercial,LADWP,FCZ17,Warehouse,IndoorLighting,Mid,Base,190.1102258
+Commercial,LADWP,FCZ17,Warehouse,Miscellaneous,Mid,Base,162.3882246
+Commercial,LADWP,FCZ17,Warehouse,OfficeEquipment,Mid,Base,2.977832772
+Commercial,LADWP,FCZ17,Warehouse,OutdoorLighting,Mid,Base,14.93586339
+Commercial,LADWP,FCZ17,Warehouse,Refrigeration,Mid,Base,0
+Commercial,LADWP,FCZ17,Warehouse,Residual,Mid,Base,398.7068913
+Commercial,LADWP,FCZ17,Warehouse,Ventilation,Mid,Base,13.78737388
+Commercial,LADWP,FCZ17,Warehouse,WaterHeating,Mid,Base,0.699652347
