@@ -9,16 +9,17 @@ import utils
 
 ##### TO-DO: 
 
-##### 2. Currently upper limit on all resources is 400 MW. Change this method to Elena's method of a constraint in hour of highest EE savings or solar production.
+##### 2. Fix overbuild constraint — right now no nondisp resources are built because they can't fulfill constraint. Change to be fulfilled in hour of peak Harbor generation? Or change "incremental capacity variable" to be the resource capacity var?
 ##### 3. For EE and solar and nondisp resources: Incorporate avoided transmission and distribution costs for energy generated to meet Harbor.
 ##### 6. Incorporate demand response.
-##### Change storage grid-average emissions to marginal emissions. Pending conversation with WattTime.
+##### Change storage grid-average emissions to marginal emissions. Pending response from WattTime. Incorporate PM2.5 emissions.
 ##### 3. Resource potential constraints.
 ##### 4. Retirement of Harbor — cannot continue to produce electricity for 30 years. Need to incorporate this deadline. Merge the Harbor & new gas plant option as a replacement cost for Harbor?
 ##### 1. Inflation —— make sure all costs are in correct dollar year ($2018). NREL ATB projected costs are in 2018 real dollars. Need to incorporate inflation rate for EE costs. Need to confirm that inflation costs are already incorporated into projected fixed and variable costs from NREL. Need to inflate costs that are inputs (ex. marginal generation energy cost).
 ##### 3. Incorporate paired resilient solar+storage systems based on REopt apartment building discussion. Incorporate resilient hubs.
 ##### 4. Diesel genset emissions: change code to read in diesel genset parameters rather than set as inputs. See notes from conversation with Patrick. Use updated dataset from Lisa Ramos. Need yearly fuel costs. Run REOpt using reference building to figure out paired solar + storage for replacing diesel gensets.
-##### 5. Create LADWP model and then Mayor model.
+##### 5. Create LADWP model and then Mayor model. Change EE costs to just utility costs for LADWP model.
+##### 4. Incorporate cost of PM2.5 to hourly grid emissions and Harbor emissions. Also make sure that the same pollutants are evaluated across resources. 
 
 
 
@@ -27,7 +28,6 @@ import utils
 ##### 2. Confirm that transmission cost should be scaled with capacity of outofbasin resources. 
 ##### 5. Resources are currently valued for the generation they provide over a 30-year timespan. Value the residual energy they generate after this window? Ex. if something is built in build-year 10, value the residual energy generated it generates for the 10 years after the portfolio timespan is complete?
 ##### 1. Fix storage cost — should variable cost include cost of electricity if storage charges from grid?
-##### 4. Incorporate cost of PM2.5 and PM10 to hourly grid emissions and Harbor emissions. Also make sure that the same pollutants are evaluated across resources. 
 ##### 9. Make sure "existing_mw" for legacy resources is incorporated correctly.
 ##### 10. If cost_projection assumption is anything other than 'moderate', need to find "advanced" and "conservative" cost projetion estimates for EE resources.
 
@@ -231,8 +231,8 @@ class LinearProgram(object):
                 #Add total cost coefficient to nondisp capacity variable in objective function.
                 objective.SetCoefficient(capacity, capex_fixed)
                 
-        
-            #Within build year loop but outside of hourly loop, add capex and fixed costs to objective function for every disp resource.         
+                
+            #Within build year loop but outside of hourly loop, add capex and fixed costs to objective function for every dispatchable resource.         
             for resource in self.disp.index:
                 
                 self.lcoe_dict[year][resource]={}
@@ -289,7 +289,7 @@ class LinearProgram(object):
                     fixed_mw_extrapolated = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000 * self.discounting_factor[year] * discount_factor
                     
 
-                ## Uncomment the following block once diesel emissions are figured out.
+                ## Subtract avoided emissions from cost of resilient storage replacing diesel gensets.
                 if resource == 'diesel_genset_replacement_storage_4hr':
                     diesel_genset_monetized_emissions_yearly = (self.diesel_genset_carbon_per_mw * self.social_cost_carbon_short_ton) + self.diesel_genset_pm25_per_mw * self.pm25_cost_short_ton_la + self.diesel_genset_nox_per_mw * self.nox_cost_short_ton_la + self.diesel_genset_so2_per_mw * self.so2_cost_short_ton_la #+ self.diesel_genset_pm10_per_mw * self.pm10_cost_per_ton 
                     
@@ -326,7 +326,7 @@ class LinearProgram(object):
             
                 
             # Loop through every hour in demand, creating:
-            # 1) hourly gen variables for each disp resource 
+            # 1) hourly generation variables for each dispatchable resource 
             # 2) hourly constraints
             # 3) adding variable cost coefficients to each hourly generation variable.
             for ind in profiles.index:
@@ -338,29 +338,113 @@ class LinearProgram(object):
                 fulfill_demand = self.solver.Constraint(harbor.loc[ind,'load_mw'], self.solver.infinity())
 #                 else:
 #                     fulfill_demand = self.solver.Constraint(0, self.solver.infinity())
+
+                
+                #Create dictionary to hold overbuild constraints.
+                #over_build_dict = {}
                     
                 #If storage can only charge from portfolio of resources, initialize constraint that storage can only charge from dispatchable generation or solar (not energy efficiency).
                 if self.storage_can_charge_from_grid == False:
                     storage_charge = self.solver.Constraint(0, self.solver.infinity())
                     
-                #Calculate monetized grid emissions for each hour of the year — health impacts for NOx and SO2 and social cost of carbon for CO2.
+                #Calculate monetized grid emissions for each hour of the year — health impacts for NOx and SO2 and social cost of carbon for CO2. NOTE: Need to incorporate PM2.5.
                 if self.health_costs == 'LOW':
                     grid_monetized_emissions_per_mwh = self.wholegrid_emissions.loc[ind, 'so2_cost_per_mwh_LOW_'+self.discount_rate_abbrev] + self.wholegrid_emissions.loc[ind, 'nox_cost_per_mwh_LOW_'+ self.discount_rate_abbrev] + (self.wholegrid_emissions.loc[ind,'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton)
                 elif self.health_costs == 'HIGH':
                     grid_monetized_emissions_per_mwh = self.wholegrid_emissions.loc[ind, 'so2_cost_per_mwh_HIGH_'+self.discount_rate_abbrev] + self.wholegrid_emissions.loc[ind, 'nox_cost_per_mwh_HIGH_'+self.discount_rate_abbrev]+ (self.wholegrid_emissions.loc[ind,'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton)
-                    
-                ##DELETE after running loops for upper capacity of solar/ee!!!!!!!!!!!!!!!!!!!!!!!!
-                grid_monetized_emissions_per_mwh = 0
                 
-                #Calculate value of additional energy generated in this hour of the year. This includes avoided generation, transmission, and distribution costs. 
+                #Calculate value of additional energy generated in this hour of the year. This includes avoided generation costs and avoided grid emissions. 
                 #*** Need to apply inflation rate to this value?
                 value_additional_energy_mwh = self.avoided_marginal_generation_cost_per_mwh + grid_monetized_emissions_per_mwh
                 
-                #Create dummy variable so that a scalar coefficient can be added to the objective function in each hour. This is part of the equation incorporating the value of additional energy generated.
+                #Create dummy variable so that a scalar coefficient can be added to the objective function in each hour. Part of the equation incorporating the value of additional energy generated.
                 dummy_variable= self.solver.NumVar(1, 1, 'dummy_variable'+str(year)+str(ind))
                 dummy_variable_coeff = value_additional_energy_mwh * harbor.loc[ind,'load_mw']
 
                 objective.SetCoefficient(dummy_variable, dummy_variable_coeff)
+                
+                #Within hourly for loop, loop through nondispatchable resources to create over_build constraints for the given hour.   
+#                 for resource in self.nondisp.index:
+                    
+#                     #Nondispatchable resources can only generate their hourly generation/savings profile scaled by nameplate capacity. 
+#                     profile_max = max(profiles[resource])
+#                     scaling_coefficient = profiles.loc[ind, resource] / profile_max
+                    
+#                     #Initialize constraint to limit resource overbuild if scaling_coefficient is 1 (max in that hour). Append constraint to over_build dictionary in order to reference in other resource for loops.
+#                     if scaling_coefficient == 1:
+#                         over_build = self.solver.Constraint(-self.solver.infinity(), 0)
+                        
+#                         #Uncomment below to return to old method of using dummy variable to represent incremental capacity.
+#                         #incremental_capacity_var = self.solver.NumVar(1, 1, 'incremental_capacity_var'+str(resource)+str(year)+str(ind))
+#                         #This represents the generation from an incremental unit of capacity (1 KW) of the given resource.
+#                         #over_build.SetCoefficient(incremental_capacity_var, -0.001)
+                        
+#                         #New overbuild method sets coefficient of current year capacity to 0.999. 
+#                         current_year_capacity = self.capacity_vars[resource][year]
+#                         over_build.SetCoefficient(current_year_capacity, 0.999)
+                        
+#                         #Add Harbor generation to the overbuild constraint for this timestep.
+#                         harbor_gen_var = self.solver.NumVar(1, 1, 'harbor_gen_var'+str(resource)+str(year)+str(ind))
+#                         over_build.SetCoefficient(harbor_gen_var, -harbor.loc[ind,'load_mw'])
+                        
+#                         over_build_dict[resource]= over_build
+                
+                #Within hourly for loop, loop through nondispatchable resources.   
+                for resource in self.nondisp.index:
+                    
+                    #Nondispatchable resources can only generate their hourly profile scaled by nameplate capacity to help fulfill demand. 
+                    profile_max = max(profiles[resource])
+                    scaling_coefficient = profiles.loc[ind, resource] / profile_max
+                    
+                    nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
+
+                    for i, var in enumerate(nondisp_capacity_cumulative):
+                        fulfill_demand.SetCoefficient(var, scaling_coefficient)
+                        
+#                         for key,constraint in over_build_dict.items():
+#                             #Add generation from cumulative capacity of the given resource to the over_build constraints in that hour.
+#                             if key == resource:
+#                                 if i != len(nondisp_capacity_cumulative):
+#                                     constraint.SetCoefficient(var, scaling_coefficient)
+#                             else:
+#                                 constraint.SetCoefficient(var, scaling_coefficient)
+                        
+                        if self.storage_can_charge_from_grid == False:
+                            if 'solar' in resource:
+                                storage_charge.SetCoefficient(var, scaling_coefficient)
+                    
+                    #Get the coefficient of capacity variable and change coefficient to incorporate value of additional energy generated in this hour.
+                    capacity_variable_current_build_year = self.capacity_vars[resource][-1]
+                    
+                    existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
+
+                    #Calculate variable cost including monetized emissions from that resource.
+                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']*self.so2_cost_short_ton_la #+ self.nondisp.loc[resource, 'pm10_lbs_per_mwh']*self.pm10_cost_per_ton + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']*self.pm25_cost_per_ton
+                    
+                    #Error check— nondispatchable resources should have 0 emissions.
+                    if resource_monetized_emissions_mwh > 0:
+                        print(resource, 'resource_monetized_emissions_mwh',resource_monetized_emissions_mwh)
+                    
+                    variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
+                    resource_inds = self.resource_costs['resource']==resource
+                    variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item()
+
+                    variable_cost_monetized_emissions = variable_cost + resource_monetized_emissions_mwh
+                    
+                    #Incorporate value of additional energy generated into coefficient.
+                    variable_cost_monetized_emissions_additional_energy = (variable_cost_monetized_emissions - value_additional_energy_mwh) * scaling_coefficient
+                                         
+                    #If not in the last build_year, don't extrapolate variable costs. Just discount back to build_start_year. If in the last build year, extrapolate variable costs to the end of portfolio timespan and then discount total extrapolated costs back to build_start_year.
+                    discount_factor = pow(self.growth_rate, -(year))
+                    if year < (self.build_years-1):
+                        coefficient_adjustment = variable_cost_monetized_emissions_additional_energy * discount_factor
+                    else:
+                        coefficient_adjustment = variable_cost_monetized_emissions_additional_energy * self.discounting_factor[year] * discount_factor
+
+                    #Adjust coefficient on capacity variable to include the value of additional energy.
+                    new_coefficient = existing_coeff + coefficient_adjustment
+                    objective.SetCoefficient(capacity_variable_current_build_year, new_coefficient)
+
                 
                 #Create hourly charge and discharge variables for each storage resource and store in respective dictionaries. 
                 for resource in self.storage.index:
@@ -372,10 +456,15 @@ class LinearProgram(object):
                     charge= self.solver.NumVar(0, self.solver.infinity(), resource + '_charge_year'+ str(year) + '_hour' + str(ind))
                     discharge= self.solver.NumVar(0, self.solver.infinity(), resource + '_discharge_year'+ str(year) + '_hour' + str(ind))
 
+#                     for key,constraint in over_build_dict.items():
+#                         #Add charge and discharge from given storage resource to the over_build constraints in that hour.
+#                         constraint.SetCoefficient(charge, -1)
+#                         constraint.SetCoefficient(discharge, 1)
+
                     if self.storage_can_charge_from_grid == False:
                         storage_charge.SetCoefficient(charge, -1)
                     
-                    #Add variable cost of charging to objective function. If storage charges from grid, add monetized grid emissions to variable cost. 
+                    #Add variable cost of charging to objective function. If storage charges from grid, add monetized grid emissions to variable cost. #Note: variable cost should include the wholesale cost of electricity for charging storage.
                     cost_type_inds = self.resource_costs['cost_type']=='variable_per_mwh'
                     resource_inds = self.resource_costs['resource']==resource
                     
@@ -462,8 +551,6 @@ class LinearProgram(object):
 
                         #Get the state of charge from previous timestep to include in the state_of_charge_constraint.
                         previous_state = self.storage_state_of_charge_vars[resource][-1]
-                        if year == 3 and ind == 0:
-                            print('previous_state', previous_state)
                         state_of_charge_constraint.SetCoefficient(previous_state, 1)
                         
                     else: 
@@ -501,6 +588,10 @@ class LinearProgram(object):
                     #Create generation variable for each dispatchable resource for every hour. 
                     gen = self.solver.NumVar(0, self.solver.infinity(), '_gen_year_'+ str(year) + '_hour' + str(ind))
                     
+#                     for key,constraint in over_build_dict.items():
+#                         #Add generation from given dispatchable resource to the over_build constraints in that hour.
+#                         constraint.SetCoefficient(gen, 1)
+                    
                     if self.storage_can_charge_from_grid == False:
                         storage_charge.SetCoefficient(gen, 1)
 
@@ -514,7 +605,6 @@ class LinearProgram(object):
                     
                     #Calculate variable costs extrapolated over portfolio timespan.
                     if 'gas' in resource:
-                        
                         variable_om_inds = self.resource_costs['cost_type']=='variable_per_mwh'
                         variable_fuel_cost_inds = self.resource_costs['cost_type']=='fuel_costs_per_mmbtu'
                         heat_rate_inds = self.resource_costs['cost_type']=='heat_rate_mmbtu_per_mwh'
@@ -552,58 +642,6 @@ class LinearProgram(object):
                     for i, var in enumerate(disp_capacity_cumulative):
                         max_gen.SetCoefficient(var, 1)
                     max_gen.SetCoefficient(gen, -1)
-
-                #Within hourly for loop, loop through nondispatchable resources.   
-                for resource in self.nondisp.index:
-                    
-                    #Nondispatchable resources can only generate their hourly profile scaled by nameplate capacity to help fulfill demand. 
-                    profile_max = max(profiles[resource])
-                    scaling_coefficient = profiles.loc[ind, resource] / profile_max
-                    
-                    #Initialize constraint to limit resource overbuild if scaling_coefficient is 1 (max in that hour).
-                    if scaling_coefficient == 1:
-                        constraint_name = 'over_build' + str(resource)
-                        'over_build' + str(resource) = self.solver.Constraint(-self.solver.infinity(), 0)
-                    
-                    nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
-
-                    for i, var in enumerate(nondisp_capacity_cumulative):
-                        fulfill_demand.SetCoefficient(var, scaling_coefficient)
-                        if self.storage_can_charge_from_grid == False:
-                            if 'solar' in resource:
-                                storage_charge.SetCoefficient(var, scaling_coefficient)
-                    
-                    #Get the coefficient of capacity variable and change coefficient to incorporate value of additional energy generated in this hour.
-                    capacity_variable_current_build_year = self.capacity_vars[resource][-1]
-                    
-                    existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
-
-                    #Calculate variable cost including monetized emissions.
-                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']*self.so2_cost_short_ton_la #+ self.nondisp.loc[resource, 'pm10_lbs_per_mwh']*self.pm10_cost_per_ton + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']*self.pm25_cost_per_ton
-                    
-                    if resource_monetized_emissions_mwh > 0:
-                        print(resource, 'resource_monetized_emissions_mwh',resource_monetized_emissions_mwh)
-                    
-                    variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
-                    resource_inds = self.resource_costs['resource']==resource
-                    variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item()
-
-                    variable_cost_monetized_emissions = variable_cost + resource_monetized_emissions_mwh
-                    
-                    #Incorporates value of additional energy generated.
-                    variable_cost_monetized_emissions_additional_energy = (variable_cost_monetized_emissions - value_additional_energy_mwh) * scaling_coefficient
-                                         
-                    #If not in the last build_year, don't extrapolate variable costs. Just discount back to build_start_year. If in the last build year, extrapolate variable costs to the end of portfolio timespan and then discount total extrapolated costs back to build_start_year.
-                    discount_factor = pow(self.growth_rate, -(year))
-                    if year < (self.build_years-1):
-                        coefficient_adjustment = variable_cost_monetized_emissions_additional_energy * discount_factor
-                    else:
-                        coefficient_adjustment = variable_cost_monetized_emissions_additional_energy * self.discounting_factor[year] * discount_factor
-
-                    new_coefficient = existing_coeff + coefficient_adjustment
-                    
-                    #Adjust coefficient on capacity variable to include the value of additional energy.
-                    objective.SetCoefficient(capacity_variable_current_build_year, new_coefficient)
 
 
         return objective
@@ -659,7 +697,7 @@ class LinearProgram(object):
             if self.resources.loc[str(resource)]['legacy'] == 'n':
                 #Create list of capacity variables for each year of build.
                 for year in range(build_years):
-                    capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
+                    capacity = self.solver.NumVar(0, 400, str(resource)+ '_' + str(year))
                     capacity_by_build_year.append(capacity)
                 capacity_by_resource[resource] = capacity_by_build_year
             else:
