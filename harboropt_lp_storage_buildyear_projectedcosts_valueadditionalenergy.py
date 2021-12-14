@@ -22,7 +22,6 @@ import utils
 
 
 #Nice-to-have:
-##### 1. Optimize just among clean energy resources? And compare to a separate case where gas is built?
 ##### 2. Confirm that transmission cost should be scaled with capacity of outofbasin resources. 
 ##### 5. Resources are currently valued for the generation they provide over a 30-year timespan. Value the residual energy they generate after this window? Ex. if something is built in build-year 10, value the residual energy generated it generates for the 10 years after the portfolio timespan is complete?
 ##### 1. Fix storage cost — should variable cost include cost of electricity if storage charges from grid?
@@ -33,7 +32,7 @@ import utils
         
 class LinearProgram(object):
     
-    def __init__(self, selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, discount_rate = 0.03, cost=1, build_years = 1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2018, transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 35000, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 20, diesel_genset_run_hours_per_year = 24):#,gas_fuel_cost=4):
+    def __init__(self, selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, discount_rate = 0.03, cost=1, build_years = 1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2018, ee_cost_type = 'total_cost', transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 35000, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 20, diesel_genset_run_hours_per_year = 24):#,gas_fuel_cost=4):
         
         self.selected_resource = selected_resource
         self.initial_state_of_charge = initial_state_of_charge
@@ -42,6 +41,7 @@ class LinearProgram(object):
         self.storage_lifespan = storage_lifespan
         self.build_years = build_years
         self.build_start_year = build_start_year
+        self.ee_cost_type = ee_cost_type
         self.transmission_capex_cost_per_mw = transmission_capex_cost_per_mw
         self.transmission_annual_cost_per_mw = transmission_annual_cost_per_mw
         
@@ -148,6 +148,9 @@ class LinearProgram(object):
         #Creates nested dictionary to hold cost information for each resource in order to calculate LCOE.
         self.lcoe_dict = {}
         
+        #Creates nested dictionary to hold cost information (w/ co-benefits) for each resource in order to calculate LCOE.
+        self.lcoe_dict_w_cobenefits = {}
+        
         self.objective = self._add_constraints_and_costs() 
         
               
@@ -167,10 +170,12 @@ class LinearProgram(object):
             
             cost_year = self.build_start_year + year
             self.lcoe_dict[year]={}
+            self.lcoe_dict_w_cobenefits[year]={}
             
             #Outside of hourly loop, add capex costs and extrapolated fixed costs to obj function for each nondisp resource. 
             for resource in self.nondisp.index: 
                 self.lcoe_dict[year][resource]={}
+                self.lcoe_dict_w_cobenefits[year][resource]={}
                 
                 capacity = self.capacity_vars[resource][year]
                 
@@ -215,9 +220,11 @@ class LinearProgram(object):
                
                 #Add capex cost for given build year to lcoe dictionary.
                 self.lcoe_dict[year][resource]['capex']=capex_mw
+                self.lcoe_dict_w_cobenefits[year][resource]['capex']=capex_mw
                 
                 #Add fixed costs extrapolated over portfolio timespan to lcoe dictionary.
                 self.lcoe_dict[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
+                self.lcoe_dict_w_cobenefits[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
                 
                 capex_fixed = capex_mw + fixed_mw_extrapolated
                 
@@ -235,6 +242,7 @@ class LinearProgram(object):
             for resource in self.disp.index:
                 
                 self.lcoe_dict[year][resource]={}
+                self.lcoe_dict_w_cobenefits[year][resource]={}
                 capacity = self.capacity_vars[resource][year]
                 
                 resource_inds = self.resource_costs['resource']==resource
@@ -244,6 +252,7 @@ class LinearProgram(object):
                 
                 #Add capex cost for the given build year to lcoe dictionary.
                 self.lcoe_dict[year][resource]['capex']=capex_cost_per_mw
+                self.lcoe_dict_w_cobenefits[year][resource]['capex']=capex_cost_per_mw
                 
                 fixed_cost_inds = self.resource_costs['cost_type']=='fixed_per_kw_year'
                 
@@ -253,6 +262,7 @@ class LinearProgram(object):
                 
                 #Add fixed costs accumulated over chosen timespan to lcoe dictionary.
                 self.lcoe_dict[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
+                self.lcoe_dict_w_cobenefits[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
                 
                 capex_fixed = capex_cost_per_mw + fixed_mw_extrapolated
                 objective.SetCoefficient(capacity, capex_fixed)
@@ -349,8 +359,6 @@ class LinearProgram(object):
                 elif self.health_costs == 'HIGH':
                     grid_monetized_emissions_per_mwh = self.wholegrid_emissions.loc[ind, 'so2_cost_per_mwh_HIGH_'+self.discount_rate_abbrev] + self.wholegrid_emissions.loc[ind, 'nox_cost_per_mwh_HIGH_'+self.discount_rate_abbrev]+ (self.wholegrid_emissions.loc[ind,'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton)
                     
-                ##DELETE after running loops for upper capacity of solar/ee!!!!!!!!!!!!!!!!!!!!!!!!
-                grid_monetized_emissions_per_mwh = 0
                 
                 #Calculate value of additional energy generated in this hour of the year. This includes avoided generation, transmission, and distribution costs. 
                 #*** Need to apply inflation rate to this value?
@@ -508,9 +516,9 @@ class LinearProgram(object):
                     self.disp_gen[resource].append(gen)
 
                     #Calculate monetized emissions for given resource in selected hour.
-                    #*** Need to apply inflation rate to this value for future years?
-                    resource_monetized_emissions = (self.disp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.disp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.disp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la #+ self.disp.loc[resource, 'pm10_lbs_per_mwh']/2000*self.pm10_cost_per_ton + self.disp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_per_ton
-                        
+                    #*** Need to apply inflation rate to this value for future years? 
+                    resource_monetized_emissions_mwh = (self.disp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.disp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.disp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.disp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
+                    
                     
                     #Calculate variable costs extrapolated over portfolio timespan.
                     if 'gas' in resource:
@@ -522,12 +530,12 @@ class LinearProgram(object):
                         variable_fuel_cost = self.resource_costs.loc[variable_fuel_cost_inds & resource_inds, str(cost_year)].item()
                         variable_heat_rate = self.resource_costs.loc[heat_rate_inds & resource_inds, str(cost_year)].item()
 
-                        variable_cost = variable_om_cost + (variable_fuel_cost*variable_heat_rate) + resource_monetized_emissions
+                        variable_cost = variable_om_cost + (variable_fuel_cost*variable_heat_rate) + resource_monetized_emissions_mwh
                         
 
                     else:
                         variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
-                        variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds,str(cost_year)].item()+ resource_monetized_emissions
+                        variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds,str(cost_year)].item()+ resource_monetized_emissions_mwh
                     
                     #Incorporate coefficient for the value of additional energy into variable cost.
                     variable_cost = variable_cost - value_additional_energy_mwh
@@ -610,7 +618,7 @@ class LinearProgram(object):
         discount_factor = []       
         for year in range(build_years):
 
-            value_decay_1 = pow(self.growth_rate, -(self.timespan-year))
+            value_decay_1 = pow(self.growth_rate, -(self.timespan)) #include if only want to evaluate resources across porftolio timespan: -year))
             value_decay_2 = pow(self.growth_rate, -1)
             try:
                 extrapolate = cost * (1.0 - value_decay_1) / (1.0-value_decay_2)
@@ -631,8 +639,13 @@ class LinearProgram(object):
         return resources
     
     def _setup_resource_costs(self):
-        resource_costs = pd.read_csv('data/resource_projected_costs.csv')
+        if self.ee_cost_type == 'utility_side':
+            resource_costs = pd.read_csv('data/resource_projected_costs_ee_utilitycosts.csv')
+        elif self.ee_cost_type == 'total_cost':
+            resource_costs = pd.read_csv('data/resource_projected_costs_ee_totalcosts.csv')
+            
         resource_costs = resource_costs[resource_costs['cost_decline_assumption']==self.cost_projections]
+        
         
         return resource_costs
 
@@ -654,7 +667,7 @@ class LinearProgram(object):
             if self.resources.loc[str(resource)]['legacy'] == 'n':
                 #Create list of capacity variables for each year of build.
                 for year in range(build_years):
-                    capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
+                    capacity = self.solver.NumVar(0, 5, str(resource)+ '_' + str(year))
                     capacity_by_build_year.append(capacity)
                 capacity_by_resource[resource] = capacity_by_build_year
             else:
@@ -726,11 +739,20 @@ class LinearProgram(object):
     def get_lcoe_per_mwh(self):
         
         #Change code to write a csv of LCOE for each resource in each build year.
-        #lcoe_per_mwh_by_resource = pd.DataFrame(index=index, columns=columns)
+        
+        lcoe_per_mwh_by_resource_df = pd.DataFrame()
+        
+        lcoe_per_mwh_w_cobenefits_by_resource_df = pd.DataFrame()
+        
         
         lcoe_per_mwh_by_resource = {}
+        profiles = pd.read_csv('data/gen_profiles.csv')
         
-        for resource in self.capacity_vars:
+        
+        for i,resource in enumerate(self.capacity_vars.keys()):
+            
+            lcoe_per_mwh_by_resource_df.loc[i,'resource']=resource
+            lcoe_per_mwh_w_cobenefits_by_resource_df.loc[i,'resource']=resource
             
             lcoe_per_mwh_by_resource[resource]={}
             
@@ -749,6 +771,8 @@ class LinearProgram(object):
 
                 #For dispatchable resources, calculate extrapolated variable cost and annual generation per mw of capacity.
                 if resource in self.disp.index:
+                    
+                    resource_monetized_emissions_mwh = (self.disp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.disp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.disp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.disp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
 
                     #Calculated extrapolated variable cost and add to lcoe dictionary. Excludes health impacts of monetized emissions.
                     if 'gas' in resource:
@@ -760,15 +784,22 @@ class LinearProgram(object):
                         variable_fuel_cost = self.resource_costs.loc[variable_fuel_cost_inds & resource_inds, str(cost_year)].item()
                         variable_heat_rate = self.resource_costs.loc[heat_rate_inds & resource_inds, str(cost_year)].item()
 
-                        variable_cost = variable_om_cost + (variable_fuel_cost*variable_heat_rate)# + resource_monetized_emissions
+                        variable_cost = variable_om_cost + (variable_fuel_cost*variable_heat_rate)
+                        
+                        variable_cost_w_cobenefits = variable_om_cost + (variable_fuel_cost*variable_heat_rate) + resource_monetized_emissions_mwh
 
                     else:
                         variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
-                        variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds,str(cost_year)].item()#+ resource_monetized_emissions
+                        variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds,str(cost_year)].item()
+                        
+                        variable_cost_w_cobenefits = variable_om_cost + (variable_fuel_cost*variable_heat_rate) + resource_monetized_emissions_mwh
                     
                     variable_cost_extrapolated = variable_cost * self.discounting_factor[build_year]
+                    
+                    variable_cost_w_cobenefits_extrapolated = variable_cost_w_cobenefits * self.discounting_factor[build_year]
 
                     self.lcoe_dict[build_year][resource]['variable_extrapolated'] = variable_cost_extrapolated
+
 
                     summed_gen = 0
                     #Currently sums generation in the year in which demand must be met with supply (the last build year).
@@ -787,27 +818,46 @@ class LinearProgram(object):
                         print(resource,': Resource is not selected in optimization solution. Cannot calculate LCOE because annual generation is N/A.')
 
                 elif resource in self.nondisp.index:
+                    
+                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
 
                     profile_max = max(profiles[resource])
                     summed_gen = sum(profiles[resource] / profile_max)
                     
                     #Add variable costs extrapolated over portfolio timespan to lcoe dictionary.
-                    self.lcoe_dict[year][resource]['variable_extrapolated']=self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item() * summed_gen * self.discounting_factor[build_year]
+                    self.lcoe_dict[build_year][resource]['variable_extrapolated']=self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item() * summed_gen * self.discounting_factor[build_year]
 
                     #Add annual mwh generated per mw capacity to lcoe dictionary.
-                    self.lcoe_dict[year][resource]['annual_generation_per_mw']=summed_gen
+                    self.lcoe_dict[build_year][resource]['annual_generation_per_mw']=summed_gen
                     
                     variable_cost_extrapolated = self.lcoe_dict[build_year][resource]['variable_extrapolated']
                     mwh_per_mw = self.lcoe_dict[build_year][resource]['annual_generation_per_mw']
 
 
-                variable_costs = variable_cost_extrapolated * mwh_per_mw
-                lcoe_per_mw = capex + fixed_extrapolated + variable_costs
-                lcoe_per_mwh = lcoe_per_mw / (mwh_per_mw*self.timespan)
+                if 'annual_generation_per_mw' in self.lcoe_dict[build_year][resource].keys():
+                    #Calculate lcoe_per_mwh without co-benefits.
+                    variable_costs = variable_cost_extrapolated * mwh_per_mw
+                    lcoe_per_mw = capex + fixed_extrapolated + variable_costs
+                    lcoe_per_mwh = lcoe_per_mw / (mwh_per_mw*self.timespan)
+                    
+                    lcoe_per_mwh_by_resource[resource][build_year] = lcoe_per_mwh
+                    
+                    #Calculate lcoe_per_mwh with co-benefits.
+                    variable_costs = variable_cost_extrapolated * mwh_per_mw
+                    lcoe_per_mw = capex + fixed_extrapolated + variable_costs
+                    lcoe_per_mwh = lcoe_per_mw / (mwh_per_mw*self.timespan)
 
-                lcoe_per_mwh_by_resource[resource][build_year] = lcoe_per_mwh
-        
-        return lcoe_per_mwh_by_resource
+                    lcoe_per_mwh_by_resource[resource][build_year] = lcoe_per_mwh
+                    
+                    lcoe_per_mwh_by_resource_df.loc[i, build_year] = lcoe_per_mwh
+                    lcoe_per_mwh_w_cobenefits_by_resource_df.loc[i, build_year] = lcoe_per_mwh
+                
+            lcoe_per_mwh_by_resource_df['lceo_type'] = 'no_cobenefits'
+            lcoe_per_mwh_w_cobenefits_by_resource_df['lceo_type'] = 'w_cobenefits'
+            
+            lcoe_per_mwh_by_resource_df = pd.concat([lcoe_per_mwh_by_resource_df,lcoe_per_mwh_w_cobenefits_by_resource_df], ignore_index=True)
+                
+        return lcoe_per_mwh_by_resource_df
         
                 
                     
