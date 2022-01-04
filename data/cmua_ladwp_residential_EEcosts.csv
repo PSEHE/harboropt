@@ -11,7 +11,7 @@ incentive_dollars_per_first_year_kwh_saved,Water Heating,0.53,0.55,0.57,0.59,0.6
 incentive_dollars_per_first_year_kwh_saved,New Construction,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6
 nonincentive_dollars_per_first_year_kwh_saved,Appliance,0.56,0.56,0.56,0.55,0.55,0.54,0.54,0.54,0.53,0.53,0.53,0.53,0.53,0.53,0.52,0.52,0.53,0.53,0.53,0.53
 nonincentive_dollars_per_first_year_kwh_saved,Behavior,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01
-nonincentive_dollars_per_first_year_kwh_saved,Building Shell,0.33,0.32,0.32,0.32,0.31,0.31,0.29,0.29,0.29,0.24,0.32,0.33,0.33,0.32,0.32,,,,,
+nonincentive_dollars_per_first_year_kwh_saved,Building Shell,0.33,0.32,0.32,0.32,0.31,0.31,0.29,0.29,0.29,0.24,0.32,0.33,0.33,0.32,0.32,0.32,0.32,0.32,0.32,0.32
 nonincentive_dollars_per_first_year_kwh_saved,Cooling,0.22,0.22,0.22,0.22,0.22,0.21,0.21,0.21,0.21,0.22,0.22,0.23,0.23,0.24,0.25,0.22,0.23,0.23,0.23,0.23
 nonincentive_dollars_per_first_year_kwh_saved,Electronics,1.08,1.08,1.08,1.08,1.08,1.08,1.08,1.08,1.07,1.07,1.07,1.08,1.08,1.08,1.08,1.08,1.07,1.07,1.07,1.08
 nonincentive_dollars_per_first_year_kwh_saved,HVAC,0.21,0.21,0.21,0.21,0.21,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.21,0.21,0.22,0.22,0.23,0.25,0.27

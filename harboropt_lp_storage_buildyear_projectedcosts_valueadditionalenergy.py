@@ -85,6 +85,7 @@ class LinearProgram(object):
 
         self.resources = self._setup_resources()
         self.resource_costs = self._setup_resource_costs()
+        
         self.capacity_vars = self._initialize_capacity_by_resource(build_years)
         
         self.storage = self._setup_storage()
@@ -470,8 +471,6 @@ class LinearProgram(object):
 
                         #Get the state of charge from previous timestep to include in the state_of_charge_constraint.
                         previous_state = self.storage_state_of_charge_vars[resource][-1]
-                        if year == 3 and ind == 0:
-                            print('previous_state', previous_state)
                         state_of_charge_constraint.SetCoefficient(previous_state, 1)
                         
                     else: 
@@ -522,7 +521,6 @@ class LinearProgram(object):
                     
                     #Calculate variable costs extrapolated over portfolio timespan.
                     if 'gas' in resource:
-                        
                         variable_om_inds = self.resource_costs['cost_type']=='variable_per_mwh'
                         variable_fuel_cost_inds = self.resource_costs['cost_type']=='fuel_costs_per_mmbtu'
                         heat_rate_inds = self.resource_costs['cost_type']=='heat_rate_mmbtu_per_mwh'
@@ -582,7 +580,7 @@ class LinearProgram(object):
                     existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
 
                     #Calculate variable cost including monetized emissions.
-                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']*self.so2_cost_short_ton_la #+ self.nondisp.loc[resource, 'pm10_lbs_per_mwh']*self.pm10_cost_per_ton + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']*self.pm25_cost_per_ton
+                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la #+ self.nondisp.loc[resource, 'pm10_lbs_per_mwh']*self.pm10_cost_per_ton + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']*self.pm25_cost_per_ton
                     
                     if resource_monetized_emissions_mwh > 0:
                         print(resource, 'resource_monetized_emissions_mwh',resource_monetized_emissions_mwh)

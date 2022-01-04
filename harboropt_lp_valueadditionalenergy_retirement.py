@@ -9,7 +9,6 @@ import utils
 
 ##### TO-DO: 
 
-##### 1. Figure out abnormal solution issue. Rule out recent changes.
 ##### 2. Align resource names between files. Incorporate resource potential for solar and storage into code.
 ##### 2. Fix resource potential to deal with cumulative limits in each year.
 ##### 3. Add grid as resource option with wholesale cost of electricity and marginal emissions profile. Either CAISO or LADWP.
@@ -32,7 +31,21 @@ import utils
         
 class LinearProgram(object):
     
-    def __init__(self, selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, wholesale_cost_electricity_mwh = 39.39, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 35000, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 20, diesel_genset_run_hours_per_year = 24):#,gas_fuel_cost=4):
+    def __init__(self, selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, wholesale_cost_electricity_mwh = 39.39, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility_side', transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#,gas_fuel_cost=4):
+        
+        #Test out each constraint.
+        self.fulfill_demand_constraint = True
+        self.max_charge_constraint = True
+        
+        self.residential_storage_potential_limit_SF_constraint=True
+        self.residential_storage_potential_limit_MF_constraint=True
+        self.commercial_storage_potential_limit_constraint=True
+        self.dr_shed_yearly_limit_constraint = True
+        self.dr_shed_daily_limit_constraint = True
+        self.storage_charge_constraint = True
+        self.discharge_zero_constraint = True
+        self.gen_zero_constraint = True
+        self.utility_storage_limit_constraint = True
         
         self.selected_resource = selected_resource
         self.initial_state_of_charge = initial_state_of_charge
@@ -50,6 +63,7 @@ class LinearProgram(object):
         self.build_years = self.harbor_retirement_year+1 - self.build_start_year
         self.transmission_capex_cost_per_mw = transmission_capex_cost_per_mw
         self.transmission_annual_cost_per_mw = transmission_annual_cost_per_mw
+        self.ee_cost_type = ee_cost_type
         
         self.resilience_incentive_per_mwh = storage_resilience_incentive_per_kwh * 1000
         self.resilient_storage_grid_fraction = resilient_storage_grid_fraction
@@ -92,9 +106,12 @@ class LinearProgram(object):
         self.resource_costs = self._setup_resource_costs()
         
         #Create constraints tying residential storage (SF and MF) potential to residential solar (SF and MF) potential.
-        self.residential_storage_potential_limit_SF = self.solver.Constraint(0, self.solver.infinity())
-        self.residential_storage_potential_limit_MF = self.solver.Constraint(0, self.solver.infinity())
-        self.commercial_storage_potential_limit = self.solver.Constraint(0, self.solver.infinity())
+        if self.residential_storage_potential_limit_SF_constraint == True:
+            self.residential_storage_potential_limit_SF = self.solver.Constraint(0, self.solver.infinity())
+        if self.residential_storage_potential_limit_MF_constraint == True:
+            self.residential_storage_potential_limit_MF = self.solver.Constraint(0, self.solver.infinity())
+        if self.commercial_storage_potential_limit_constraint == True:
+            self.commercial_storage_potential_limit = self.solver.Constraint(0, self.solver.infinity())
 
         self.capacity_vars = self._initialize_capacity_by_resource(self.build_years)
         
@@ -109,10 +126,8 @@ class LinearProgram(object):
         self.health_costs_emissions_la = self._setup_health_costs_emissions_la()
         
 #         self.wholegrid_emissions = self._setup_wholegrid_emissions()
-#         self.health_costs_emissions_la = self._setup_health_costs_emissions_la()
         
         #Set up health cost of pollutants emitted in LA. ** Replace with $/lb values for each pollutant from WattTime. See email from Henry.
-        
         discount_rate_inds = self.health_costs_emissions_la['discount_rate'] == self.discount_rate
         la_inds = self.health_costs_emissions_la['county'] == 'LA'
         pm25_inds = self.health_costs_emissions_la['pollutant'] == 'PM2.5' 
@@ -172,17 +187,22 @@ class LinearProgram(object):
         #Read in Harbor hourly generation and emissions profile.
         harbor = pd.read_csv('data/harbor_hourly_gen_emissions_2019.csv')
         harbor = harbor.fillna(0)
+        harbor = harbor[:600]
         
         #Read in nondispatchable resource profiles.
         profiles = pd.read_csv('data/gen_profiles.csv')
         
         for year in range(self.build_years):
             
+            print('year',year)
+            print('build_years',self.build_years)
+            
             cost_year = self.build_start_year + year
             self.lcoe_dict[year]={}
             
             #Initialize constraint limiting DR shed resource to 48 hours/year.
-            dr_shed_yearly_limit = self.solver.Constraint(0, self.solver.infinity())
+            if self.dr_shed_yearly_limit_constraint == True:
+                dr_shed_yearly_limit = self.solver.Constraint(0, self.solver.infinity())
             
             #Outside of hourly loop, add capex costs and extrapolated fixed costs to obj function for each nondisp resource. 
             for resource in self.nondisp.index: 
@@ -221,7 +241,10 @@ class LinearProgram(object):
 
                         replacement_year = int(((i+1) * weighted_avg_eul) + cost_year)
                         
-                        replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(replacement_year)].item()*1000
+                        if replacement_year > 2050:
+                            replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(2050)].item()*1000
+                        else:
+                            replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(replacement_year)].item()*1000
 
                         #Calculate discounting factor to apply to capex in the given replacement year.
                         discount_factor = pow(self.growth_rate, -(replacement_year-self.build_start_year))
@@ -257,8 +280,9 @@ class LinearProgram(object):
                 #In each year, set constraint limiting CII DR total shed (dispatch) to less than or equal to 48 hours * cumulative DR capacity.
                 if resource == 'ci_shed_nonwatersystem':
                     dr_capacity_cumulative = self.capacity_vars[resource][0:year+1]
-                    for i, var in enumerate(dr_capacity_cumulative):
-                        dr_shed_yearly_limit.SetCoefficient(var, 48)
+                    if self.dr_shed_yearly_limit_constraint == True:
+                        for i, var in enumerate(dr_capacity_cumulative):
+                            dr_shed_yearly_limit.SetCoefficient(var, 48)
                         
                 
                 resource_inds = self.resource_costs['resource']==resource
@@ -352,39 +376,36 @@ class LinearProgram(object):
             # 1) hourly generation variables for each dispatchable resource 
             # 2) hourly constraints
             # 3) adding variable cost coefficients to each hourly generation variable.
-            for ind in profiles.index:
+            for ind in harbor.index:
 
                 #Initialize fulfill demand constraint: summed generation from all resources must be equal or greater to demand in all hours.
                 
                 #Include the line below if generation only needs to meet demand in the last year of build.
                 #if year == (self.build_years-1):
-                fulfill_demand = self.solver.Constraint(harbor.loc[ind,'load_mw'], self.solver.infinity())
-#                 else:
-#                     fulfill_demand = self.solver.Constraint(0, self.solver.infinity())
+                if self.fulfill_demand_constraint == True:
+                    fulfill_demand = self.solver.Constraint(harbor.loc[ind,'load_mw']/5, self.solver.infinity())
+                #else:
+                    #fulfill_demand = self.solver.Constraint(0, self.solver.infinity())
 
                 #Every 24 hours, initialize new daily DR shed limit (4 hours).
                 if ind%24 == 0:
-                    dr_shed_daily_limit = self.solver.Constraint(0, self.solver.infinity())
-                    
-                    for i, var in enumerate(dr_capacity_cumulative):
-                        dr_shed_daily_limit.SetCoefficient(var, 4)
+                    if self.dr_shed_daily_limit_constraint == True:
+                        dr_shed_daily_limit = self.solver.Constraint(0, self.solver.infinity())
+
+                        for i, var in enumerate(dr_capacity_cumulative):
+                            dr_shed_daily_limit.SetCoefficient(var, 4)
 
                 #Create dictionary to hold overbuild constraints.
                 #over_build_dict = {}
                     
                 #If storage can only charge from portfolio of resources, initialize constraint that storage can only charge from dispatchable generation or solar (not energy efficiency).
                 if self.storage_can_charge_from_grid == False:
-                    storage_charge = self.solver.Constraint(0, self.solver.infinity())
+                    if self.storage_charge_constraint == True:
+                        storage_charge = self.solver.Constraint(0, self.solver.infinity())
                     
-                #Uncomment the below to switch back to WattTime marginal emissions. Get grid hourly health damages.
+                #Get grid hourly marginal health damages and CO2 costs.
                 grid_monetized_emissions_per_mwh = self.ladwp_marginal_healthdamages.loc[ind, 'healthdamage_moer'] + self.ladwp_marginal_co2.loc[ind,'moer (lbs CO2/MWh)']/2000*self.social_cost_carbon_short_ton
-                
-                #Comment out the below section once you've switched back to Wattime health damages.
-#                 #Calculate monetized grid emissions for each hour of the year — health impacts for NOx and SO2 and social cost of carbon for CO2. NOTE: Need to incorporate PM2.5.
-#                 if self.health_costs == 'LOW':
-#                     grid_monetized_emissions_per_mwh = self.wholegrid_emissions.loc[ind, 'so2_cost_per_mwh_LOW_'+self.discount_rate_abbrev] + self.wholegrid_emissions.loc[ind, 'nox_cost_per_mwh_LOW_'+ self.discount_rate_abbrev] + (self.wholegrid_emissions.loc[ind,'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton)
-#                 elif self.health_costs == 'HIGH':
-#                     grid_monetized_emissions_per_mwh = self.wholegrid_emissions.loc[ind, 'so2_cost_per_mwh_HIGH_'+self.discount_rate_abbrev] + self.wholegrid_emissions.loc[ind, 'nox_cost_per_mwh_HIGH_'+self.discount_rate_abbrev]+ (self.wholegrid_emissions.loc[ind,'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton)
+
                 
                 #Calculate value of additional energy generated in this hour of the year. This includes avoided generation costs and avoided grid emissions. 
                 value_additional_energy_mwh = self.avoided_marginal_generation_cost_per_mwh + grid_monetized_emissions_per_mwh
@@ -431,7 +452,8 @@ class LinearProgram(object):
                     nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
 
                     for i, var in enumerate(nondisp_capacity_cumulative):
-                        fulfill_demand.SetCoefficient(var, scaling_coefficient)
+                        if self.fulfill_demand_constraint == True:
+                            fulfill_demand.SetCoefficient(var, scaling_coefficient)
                         
 #                         for key,constraint in over_build_dict.items():
 #                             #Add generation from cumulative capacity of the given resource to the over_build constraints in that hour.
@@ -443,7 +465,8 @@ class LinearProgram(object):
                         
                         if self.storage_can_charge_from_grid == False:
                             if 'solar' in resource:
-                                storage_charge.SetCoefficient(var, scaling_coefficient)
+                                if self.storage_charge_constraint == True:
+                                    storage_charge.SetCoefficient(var, scaling_coefficient)
                     
                     #Get the coefficient of capacity variable and change coefficient to incorporate value of additional energy generated in this hour.
                     capacity_variable_current_build_year = self.capacity_vars[resource][-1]
@@ -482,11 +505,18 @@ class LinearProgram(object):
                 for resource in self.storage.index:
 
                     storage_duration = self.storage.loc[resource, 'storage_duration (hrs)']
-                    efficiency = self.storage.loc[resource, 'efficiency']    
+                    efficiency = self.storage.loc[resource, 'efficiency']
 
                     #Create hourly charge and discharge variables for each storage resource in each build year.
                     charge= self.solver.NumVar(0, self.solver.infinity(), resource + '_charge_year'+ str(year) + '_hour' + str(ind))
-                    discharge= self.solver.NumVar(0, self.solver.infinity(), resource + '_discharge_year'+ str(year) + '_hour' + str(ind))
+                    if harbor.loc[ind, 'load_mw'] > 0:
+                        discharge= self.solver.NumVar(0, self.solver.infinity(), resource + '_discharge_year'+ str(year) + '_hour' + str(ind))
+                    else:
+                        discharge= self.solver.NumVar(0, 0, resource + '_discharge_year'+ str(year) + '_hour' + str(ind))
+                        if self.discharge_zero_constraint == True:
+                            discharge_zero_constraint= self.solver.Constraint(0, 0)
+                            discharge_zero_constraint.SetCoefficient(discharge, 1)
+                        
 
 #                     for key,constraint in over_build_dict.items():
 #                         #Add charge and discharge from given storage resource to the over_build constraints in that hour.
@@ -494,7 +524,8 @@ class LinearProgram(object):
 #                         constraint.SetCoefficient(discharge, 1)
 
                     if self.storage_can_charge_from_grid == False:
-                        storage_charge.SetCoefficient(charge, -1)
+                        if self.storage_charge_constraint ==True:
+                            storage_charge.SetCoefficient(charge, -1)
                     
                     #Add variable cost of charging to objective function. If storage charges from grid, add monetized grid emissions to variable cost. #Note: variable cost should include the wholesale cost of electricity for charging storage.
                     cost_type_inds = self.resource_costs['cost_type']=='variable_per_mwh'
@@ -520,7 +551,8 @@ class LinearProgram(object):
 
                     #Limit hourly charge and discharge variables to storage max power (MW). 
                     #Sum storage capacity from previous and current build years to set max power.
-                    max_charge= self.solver.Constraint(0, self.solver.infinity())
+                    if self.max_charge_constraint == True:
+                        max_charge= self.solver.Constraint(0, self.solver.infinity())
                     storage_capacity_cumulative = self.storage_capacity_vars[resource][0:year+1]
                     for i, var in enumerate(storage_capacity_cumulative):
                         if self.storage.loc[resource, 'resilient'] == 'y':
@@ -564,11 +596,13 @@ class LinearProgram(object):
                     self.storage_discharge_vars[resource].append(discharge)
 
                     #Hourly discharge variables of storage resources are incorporated into the fulfill demand constraint. If storage can only charge from portfolio resources, include the charge variable in this constraint.
-                    fulfill_demand.SetCoefficient(discharge, efficiency)
+                    if self.fulfill_demand_constraint == True:
+                        fulfill_demand.SetCoefficient(discharge, efficiency)
                     
                     #Include the line below if storage cannot charge from grid (and can only charge from portfolio resources).
                     if self.storage_can_charge_from_grid == False:
-                        fulfill_demand.SetCoefficient(charge, -1)
+                        if self.fulfill_demand_constraint == True:
+                            fulfill_demand.SetCoefficient(charge, -1)
 
                     #Creates hourly state of charge variable, representing the state of charge at the end of each timestep. 
                     state_of_charge= self.solver.NumVar(0, self.solver.infinity(), 'state_of_charge_year'+ str(year) + '_hour' + str(ind))
@@ -618,24 +652,32 @@ class LinearProgram(object):
                     resource_inds = self.resource_costs['resource']==resource
 
                     #Create generation variable for each dispatchable resource for every hour. 
-                    gen = self.solver.NumVar(0, self.solver.infinity(), '_gen_year_'+ str(year) + '_hour' + str(ind))
+                    if harbor.loc[ind, 'load_mw'] > 0:
+                        gen = self.solver.NumVar(0, self.solver.infinity(), '_gen_year_'+ str(year) + '_hour' + str(ind))
+                    else:
+                        gen = self.solver.NumVar(0, 0, '_gen_year_'+ str(year) + '_hour' + str(ind))
+                        if self.gen_zero_constraint == True:
+                            gen_zero_constraint = self.solver.Constraint(0, 0)
+                            gen_zero_constraint.SetCoefficient(gen, 1)
                     
                     if resource == 'ci_shed_nonwatersystem':
-                        dr_shed_yearly_limit.SetCoefficient(gen, -1)
-                        dr_shed_daily_limit.SetCoefficient(gen, -1)
+                        if self.dr_shed_yearly_limit_constraint == True:
+                            dr_shed_yearly_limit.SetCoefficient(gen, -1)
+                        if self.dr_shed_daily_limit_constraint == True:
+                            dr_shed_daily_limit.SetCoefficient(gen, -1)
                     
 #                     for key,constraint in over_build_dict.items():
 #                         #Add generation from given dispatchable resource to the over_build constraints in that hour.
 #                         constraint.SetCoefficient(gen, 1)
                     
                     if self.storage_can_charge_from_grid == False:
-                        storage_charge.SetCoefficient(gen, 1)
+                        if self.storage_charge_constraint == True:
+                            storage_charge.SetCoefficient(gen, 1)
 
                     #Append hourly gen variable to the list for that resource, located in the disp_gen dictionary.
                     self.disp_gen[resource].append(gen)
 
                     #Calculate monetized emissions for given resource in selected hour.
-                    #*** Need to apply inflation rate to this value for future years?
                     resource_monetized_emissions = (self.disp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.disp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.disp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.disp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
                         
                     
@@ -670,15 +712,15 @@ class LinearProgram(object):
                     objective.SetCoefficient(gen, variable_cost_discounted)
 
                     #Add hourly gen variables for disp resources to the fulfill_demand constraint.
-                    fulfill_demand.SetCoefficient(gen, 1)
+                    if self.fulfill_demand_constraint == True:
+                        fulfill_demand.SetCoefficient(gen, 1)
 
                     #Initialize max_gen constraint: hourly gen must be less than or equal to capacity for each dispatchable resource.
                     max_gen = self.solver.Constraint(0, self.solver.infinity())
-                    
-                    
                     disp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
                     #If in Harbor retirement year, limit Harbor generation to 0. 
                     if resource == 'gas_harbor' and year == self.build_years-1:
+                
                         harbor_capacity = self.capacity_vars[resource][year]
                         max_gen.SetCoefficient(harbor_capacity, 1)
                     
@@ -710,6 +752,7 @@ class LinearProgram(object):
     
     def _setup_resources(self):
         resources = pd.read_csv('data/resources.csv')
+    
         if self.selected_resource != 'all':
             resources = resources[resources['resource']==self.selected_resource]
             
@@ -718,7 +761,11 @@ class LinearProgram(object):
         return resources
     
     def _setup_resource_costs(self):
-        resource_costs = pd.read_csv('data/resource_projected_costs.csv')
+        if self.ee_cost_type == 'utility_side':
+            resource_costs = pd.read_csv('data/resource_projected_costs_ee_utilitycosts.csv')
+        elif self.ee_cost_type == 'total_cost':
+            resource_costs = pd.read_csv('data/resource_projected_costs_ee_totalcosts.csv')
+
         resource_costs = resource_costs[resource_costs['cost_decline_assumption']==self.cost_projections]
         
         return resource_costs
@@ -731,6 +778,7 @@ class LinearProgram(object):
         storage = storage.set_index('resource')
         
         return storage
+    
     
     def _initialize_capacity_by_resource(self, build_years):
         capacity_by_resource = {}
@@ -746,7 +794,6 @@ class LinearProgram(object):
                 if 'FCZ7' in resource:
                     resource_inds = ee_resource_potential['resource']==resource
                     if resource_inds.sum()>0:
-                        print(resource)
                         for year in range(build_years):
                             calendar_year = self.build_start_year + year
                             ee_max_mw = ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
@@ -754,24 +801,26 @@ class LinearProgram(object):
                             capacity_by_build_year.append(capacity)
                         capacity_by_resource[resource] = capacity_by_build_year
                     else:
-                        print(resource)
                         for year in range(build_years):
                             capacity = self.solver.NumVar(0, 5, str(resource)+ '_' + str(year))
                             capacity_by_build_year.append(capacity)
                         capacity_by_resource[resource] = capacity_by_build_year
                 else:
                     for year in range(build_years):
-                        capacity = self.solver.NumVar(0, 5, str(resource)+ '_' + str(year))
+                        capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
                         capacity_by_build_year.append(capacity)
-                        
-                        #Add residential solar to residential storage resource limit constraint. For SFH, ratio of storage to solar is 1 (5kw solar + 5kw storage). For MFH, ratio is 0.5.
-                        if resource == 'solar_rooftop_residentialSF':
+
+                    #Add residential solar to residential storage resource limit constraint. For SFH, ratio of storage to solar is 1 (5kw solar + 5kw storage). All ratios are currently 1.
+                    if resource == 'solar_rooftop_residentialSF':
+                        if self.residential_storage_potential_limit_SF_constraint == True:
                             self.residential_storage_potential_limit_SF.SetCoefficient(capacity, 1)
-                        if resource == 'solar_rooftop_residentialMF':
+                    if resource == 'solar_rooftop_residentialMF':
+                        if self.residential_storage_potential_limit_MF_constraint == True:
                             self.residential_storage_potential_limit_MF.SetCoefficient(capacity, 1)
-                        if resource == 'solar_rooftop_ci':
+                    if resource == 'solar_rooftop_ci':
+                        if self.commercial_storage_potential_limit_constraint == True:
                             self.commercial_storage_potential_limit.SetCoefficient(capacity, 1)
-                            
+
                     capacity_by_resource[resource] = capacity_by_build_year
             else:
                 #If resource is legacy resource, capacity "built" in year 0 of build years must be less than or equal to existing capacity. If build_start_year is the same as Harbor retirement year, capacity must be 0. Built capacity in subsequent build years must be 0.
@@ -789,12 +838,81 @@ class LinearProgram(object):
                 
         return capacity_by_resource
     
+    
+    
+    
+    
+    
+    
+    def _initialize_capacity_by_resource(self, build_years):
+        capacity_by_resource = {}
+        ee_resource_potential = pd.read_csv('data/ee_resource_potential_2020_2030.csv')
+        
+        for resource in self.resources.index:
+            
+            capacity_by_build_year = []
+            
+            if self.resources.loc[str(resource)]['legacy'] == 'n':
+                #Create list of capacity variables for each year of build.
+                
+                if 'FCZ7' in resource:
+                    resource_inds = ee_resource_potential['resource']==resource
+                    if resource_inds.sum()>0:
+                        for year in range(build_years):
+                            calendar_year = self.build_start_year + year
+                            ee_max_mw = ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
+                            capacity = self.solver.NumVar(0, ee_max_mw, str(resource)+ '_' + str(year))
+                            capacity_by_build_year.append(capacity)
+                        capacity_by_resource[resource] = capacity_by_build_year
+                    else:
+                        for year in range(build_years):
+                            #For EE measures that aren't in CEC forecast of annual savings, set capacity to 0.
+                            capacity = self.solver.NumVar(0, 0, str(resource)+ '_' + str(year))
+                            capacity_by_build_year.append(capacity)
+                        capacity_by_resource[resource] = capacity_by_build_year
+                else:
+                    for year in range(build_years):
+                        capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
+                        capacity_by_build_year.append(capacity)
+
+                    #Add residential solar to residential storage resource limit constraint. For SFH, ratio of storage to solar is 1 (5kw solar + 5kw storage). All ratios are currently 1.
+                    if resource == 'solar_rooftop_residentialSF':
+                        if self.residential_storage_potential_limit_SF_constraint == True:
+                            self.residential_storage_potential_limit_SF.SetCoefficient(capacity, 1)
+                    if resource == 'solar_rooftop_residentialMF':
+                        if self.residential_storage_potential_limit_MF_constraint == True:
+                            self.residential_storage_potential_limit_MF.SetCoefficient(capacity, 1)
+                    if resource == 'solar_rooftop_ci':
+                        if self.commercial_storage_potential_limit_constraint == True:
+                            self.commercial_storage_potential_limit.SetCoefficient(capacity, 1)
+
+                    capacity_by_resource[resource] = capacity_by_build_year
+            else:
+                #If resource is legacy resource, capacity "built" in year 0 of build years must be less than or equal to existing capacity. If build_start_year is the same as Harbor retirement year, capacity must be 0. Built capacity in subsequent build years must be 0.
+                
+                existing_mw = self.resources.loc[str(resource)]['existing_mw']
+                for year in range(build_years):
+                    if year == 0:
+                        if year+self.build_start_year != self.harbor_retirement_year:
+                            
+                            capacity = self.solver.NumVar(0, existing_mw, str(resource)+ '_' + str(year))
+                            
+                        else:
+                            capacity = self.solver.NumVar(0, 0, str(resource)+ '_' + str(year))
+                    else:
+                        capacity = self.solver.NumVar(0, 0, str(resource)+ '_' + str(year))
+                    capacity_by_build_year.append(capacity)
+                capacity_by_resource[resource] = capacity_by_build_year
+                
+        return capacity_by_resource
+    
         
     def _initialize_storage_capacity_vars(self, build_years):
         storage_capacity_vars = {}
         
         #Constrain total utility-scale storage to Harbor's capacity.
-        utility_storage_limit = self.solver.Constraint(0, 452)
+        if self.utility_storage_limit_constraint == True:
+            utility_storage_limit = self.solver.Constraint(0, 452)
         
         for resource in self.storage.index:
             
@@ -805,33 +923,27 @@ class LinearProgram(object):
                     capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
                     storage_capacity_by_build_year.append(capacity)
                     
-                    If storage is utility-scale, add to total utility storage capacity constraint.
+                    #If storage is utility-scale, add to total utility storage capacity constraint.
                     storage_utility_resources = ['storage_utility_2hr','storage_utility_4hr','storage_utility_6hr']
                     if resource in storage_utility_resources:
-                        utility_storage_limit.SetCoefficient(capacity, 1)
+                        if self.utility_storage_limit_constraint == True:
+                            utility_storage_limit.SetCoefficient(capacity, 1)
                     elif resource == 'storage_residentialSF_4hr':
-                        self.residential_storage_potential_limit_SF.SetCoefficient(capacity, -1)
+                        if self.residential_storage_potential_limit_SF_constraint == True:
+                            self.residential_storage_potential_limit_SF.SetCoefficient(capacity, -1)
                     elif resource == 'storage_residentialMF_4hr':
-                        self.residential_storage_potential_limit_MF.SetCoefficient(capacity, -1)
+                        if self.residential_storage_potential_limit_MF_constraint == True:
+                            self.residential_storage_potential_limit_MF.SetCoefficient(capacity, -1)
                     elif resource == 'storage_ci_4hr':
-                        self.commercial_storage_potential_limit.SetCoefficient(capacity, -1)
+                        if self.commercial_storage_potential_limit_constraint == True:
+                            self.commercial_storage_potential_limit.SetCoefficient(capacity, -1)
                     
                 storage_capacity_vars[resource] = storage_capacity_by_build_year
 
         return storage_capacity_vars
     
     
-    #Comment out the below function when you've switched back to WattTime health damages.
-    
-#     def _setup_wholegrid_emissions(self):
-#         wholegrid_emissions = pd.read_csv('data/grid_emissions/ladwp_hourly_grid_noxSO2co2.csv')
-#         wholegrid_emissions = wholegrid_emissions.fillna(0)
-        
-#         return wholegrid_emissions
-    
-    
-    
-    #Uncomment the below when switched back to WattTime health damages.
+    #Set up WattTime health damages and CO2 costs.
     
     def _setup_ladwp_marginal_co2(self):
         ladwp_marginal_co2 = pd.read_csv('data/WattTime_MOER/LDWP_MOERv3_CO2_2019.csv')
@@ -870,7 +982,9 @@ class LinearProgram(object):
             print("Solver exited with error code {}".format(status))
         return status
             
-                   
+       
+    #Need to update this function.
+    
     def get_lcoe_per_mwh(self):
         
         #Change code to write a csv of LCOE for each resource in each build year.
