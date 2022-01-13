@@ -2,6 +2,7 @@ import numpy as np # numerical library
 import matplotlib.pyplot as plt # plotting library
 import datetime as dt
 import pandas as pd
+import os
 
 from ortools.linear_solver import pywraplp
 
@@ -31,11 +32,7 @@ import utils
         
 class LinearProgram(object):
     
-    def __init__(self, solver_type = 'CLP', demand_profile = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, wholesale_cost_electricity_mwh = 39.39, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility_side', transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#demand_hour_start = 0, demand_length_hours = 8762,gas_fuel_cost=4):
-        
-        #Find lowest and highest coefficients.
-        self.lowest_coefficient = float('inf')
-        self.highest_coefficient = 0
+    def __init__(self, solver_type = 'CLP', demand_profile = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), profiles = pd.DataFrame(), ee_resource_potential = pd.DataFrame(), resources = pd.DataFrame(), storage = pd.DataFrame(), health_cost_emissions_la = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, wholesale_cost_electricity_mwh = 39.39, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility_side', transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#demand_hour_start = 0, demand_length_hours = 8762,gas_fuel_cost=4):
         
         
         #Test out each constraint.
@@ -52,12 +49,13 @@ class LinearProgram(object):
         self.gen_zero_constraint = True
         self.utility_storage_limit_constraint = True
         
-        #Specify demand profile start hour and length to run model in chunks (for debugging).
-#         self.demand_hour_start = demand_hour_start
-#         self.demand_length_hours = demand_length_hours
-
         self.demand_profile = demand_profile
-        print(self.demand_profile)
+        self.profiles = profiles
+        self.ee_resource_potential = ee_resource_potential
+        self.resources = resources
+        self.selected_resource = selected_resource
+        if self.selected_resource != 'all':
+            self.resources = self.resources[self.resources['resource']==self.selected_resource]
         
         self.selected_resource = selected_resource
         self.initial_state_of_charge = initial_state_of_charge
@@ -127,7 +125,7 @@ class LinearProgram(object):
         elif self.solver_type == 'CBC':
             self.solver = pywraplp.Solver('HarborOptimization', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
-        self.resources = self._setup_resources()
+        self.resources = resources
         self.resource_costs = self._setup_resource_costs()
         
         #Create constraints tying residential storage (SF and MF) potential to residential solar (SF and MF) potential.
@@ -140,7 +138,7 @@ class LinearProgram(object):
 
         self.capacity_vars = self._initialize_capacity_by_resource(self.build_years)
         
-        self.storage = self._setup_storage()
+        self.storage = storage
         self.storage_capacity_vars = self._initialize_storage_capacity_vars(self.build_years)
 
         self.disp = self.resources.loc[self.resources['dispatchable'] == 'y']
@@ -150,31 +148,31 @@ class LinearProgram(object):
         #self.ladwp_marginal_co2 = self._setup_ladwp_marginal_co2()
         self.ladwp_marginal_healthdamages = marginal_healthdamages
         #self.ladwp_marginal_healthdamages = self._setup_ladwp_marginal_healthdamages()
-        self.health_cost_range_emissions_la = self._setup_health_costs_emissions_la()
+        self.health_cost_emissions_la = health_cost_emissions_la
         
 #         self.wholegrid_emissions = self._setup_wholegrid_emissions()
         
         #Set up health cost of pollutants emitted in LA. ** Replace with $/lb values for each pollutant from WattTime. See email from Henry.
-        discount_rate_inds = self.health_cost_range_emissions_la['discount_rate'] == self.discount_rate
-        la_inds = self.health_cost_range_emissions_la['county'] == 'LA'
-        pm25_inds = self.health_cost_range_emissions_la['pollutant'] == 'PM2.5' 
-        so2_inds = self.health_cost_range_emissions_la['pollutant'] == 'SO2'
-        nox_inds = self.health_cost_range_emissions_la['pollutant'] == 'NOx'
+        discount_rate_inds = self.health_cost_emissions_la['discount_rate'] == self.discount_rate
+        la_inds = self.health_cost_emissions_la['county'] == 'LA'
+        pm25_inds = self.health_cost_emissions_la['pollutant'] == 'PM2.5' 
+        so2_inds = self.health_cost_emissions_la['pollutant'] == 'SO2'
+        nox_inds = self.health_cost_emissions_la['pollutant'] == 'NOx'
         
         if self.health_cost_range == 'HIGH':
-            self.pm25_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & pm25_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
+            self.pm25_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & pm25_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
 
-            self.so2_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & so2_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
+            self.so2_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & so2_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
 
-            self.nox_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & nox_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
+            self.nox_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & nox_inds]['US_HIGH_annual ($/ton)'].iloc[0]*-1
 
             
         if self.health_cost_range == 'LOW':
-            self.pm25_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & pm25_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
+            self.pm25_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & pm25_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
 
-            self.so2_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & so2_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
+            self.so2_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & so2_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
 
-            self.nox_cost_short_ton_la = self.health_cost_range_emissions_la[discount_rate_inds & la_inds & nox_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
+            self.nox_cost_short_ton_la = self.health_cost_emissions_la[discount_rate_inds & la_inds & nox_inds]['US_LOW_annual ($/ton)'].iloc[0]*-1
   
         
         self.discounting_factor = self.discount_factor_from_cost(self.cost, self.discount_rate, self.build_years)
@@ -211,14 +209,6 @@ class LinearProgram(object):
         #Initialize objective function.
         objective = self.solver.Objective()
         
-        #Read in Harbor hourly generation and emissions profile.
-#         harbor = pd.read_csv('data/harbor_hourly_gen_emissions_2019.csv')
-#         harbor = harbor.fillna(0)
-#         harbor = harbor[self.demand_hour_start:self.demand_length_hours+self.demand_hour_start]
-#         print(harbor)
-        
-        #Read in nondispatchable resource profiles.
-        profiles = pd.read_csv('data/gen_profiles.csv')
         
         for year in range(self.build_years):
             
@@ -299,15 +289,7 @@ class LinearProgram(object):
                 #Add total cost coefficient to nondisp capacity variable in objective function.
                 objective.SetCoefficient(capacity, capex_fixed)
                 
-                
-                if capex_fixed < self.lowest_coefficient:
-                    self.lowest_coefficient = capex_fixed
-                    
-                if capex_fixed > self.highest_coefficient:
-                    self.highest_coefficient = capex_fixed
-                
-                
-                
+      
                 
             #Within build year loop but outside of hourly loop, add capex and fixed costs to objective function for every dispatchable resource.         
             for resource in self.disp.index:
@@ -321,13 +303,7 @@ class LinearProgram(object):
                     if self.dr_shed_yearly_limit_constraint == True:
                         for i, var in enumerate(dr_capacity_cumulative):
                             dr_shed_yearly_limit.SetCoefficient(var, 48)
-                            
-                            if 48 < self.lowest_coefficient:
-                                self.lowest_coefficient = 48
-                    
-                            if 48 > self.highest_coefficient:
-                                self.highest_coefficient = 48
-                        
+
                 
                 resource_inds = self.resource_costs['resource']==resource
                 capex_cost_inds = self.resource_costs['cost_type']=='capex_per_kw'
@@ -348,12 +324,7 @@ class LinearProgram(object):
                 
                 capex_fixed = capex_cost_per_mw + fixed_mw_extrapolated
                 objective.SetCoefficient(capacity, capex_fixed)
-                
-                if capex_fixed < self.lowest_coefficient:
-                    self.lowest_coefficient = capex_fixed
-                    
-                if capex_fixed > self.highest_coefficient:
-                    self.highest_coefficient = capex_fixed
+
 
             #Within build year loop but outside of hourly loop, add capex costs to objective function for every storage resource.
             for resource in self.storage.index:
@@ -421,11 +392,6 @@ class LinearProgram(object):
                 #Set capex cost for storage built in this year.
                 objective.SetCoefficient(self.storage_capacity_vars[resource][year], capex_per_mw + fixed_mw_extrapolated)
                 
-                if capex_per_mw + fixed_mw_extrapolated < self.lowest_coefficient:
-                    self.lowest_coefficient = capex_per_mw + fixed_mw_extrapolated
-                    
-                if capex_per_mw + fixed_mw_extrapolated > self.highest_coefficient:
-                    self.highest_coefficient = capex_per_mw + fixed_mw_extrapolated
             
                 
             # Loop through every hour in demand, creating:
@@ -450,12 +416,7 @@ class LinearProgram(object):
 
                         for i, var in enumerate(dr_capacity_cumulative):
                             dr_shed_daily_limit.SetCoefficient(var, 4)
-                            
-                            if 4 < self.lowest_coefficient:
-                                self.lowest_coefficient = 4
-                    
-                            if 4 > self.highest_coefficient:
-                                self.highest_coefficient = 4
+
 
                 #Create dictionary to hold overbuild constraints.
                 #over_build_dict = {}
@@ -472,24 +433,20 @@ class LinearProgram(object):
                 #Calculate value of additional energy generated in this hour of the year. This includes avoided generation costs and avoided grid emissions. 
                 value_additional_energy_mwh = self.avoided_marginal_generation_cost_per_mwh + grid_monetized_emissions_per_mwh
                 
+                
                 #Create dummy variable so that a scalar coefficient can be added to the objective function in each hour. Part of the equation incorporating the value of additional energy generated.
                 dummy_variable= self.solver.NumVar(1, 1, 'dummy_variable'+str(year)+str(ind))
                 dummy_variable_coeff = value_additional_energy_mwh * self.demand_profile.loc[ind,'load_mw']
 
                 objective.SetCoefficient(dummy_variable, dummy_variable_coeff)
-                
-                if dummy_variable_coeff < self.lowest_coefficient:
-                    self.lowest_coefficient = dummy_variable_coeff
-                    
-                if dummy_variable_coeff > self.highest_coefficient:
-                    self.highest_coefficient = dummy_variable_coeff
+
                 
                 #Within hourly for loop, loop through nondispatchable resources to create over_build constraints for the given hour.   
 #                 for resource in self.nondisp.index:
                     
 #                     #Nondispatchable resources can only generate their hourly generation/savings profile scaled by nameplate capacity. 
-#                     profile_max = max(profiles[resource])
-#                     scaling_coefficient = profiles.loc[ind, resource] / profile_max
+#                     profile_max = max(self.profiles[resource])
+#                     scaling_coefficient = self.profiles.loc[ind, resource] / profile_max
                     
 #                     #Initialize constraint to limit resource overbuild if scaling_coefficient is 1 (max in that hour). Append constraint to over_build dictionary in order to reference in other resource for loops.
 #                     if scaling_coefficient == 1:
@@ -514,8 +471,8 @@ class LinearProgram(object):
                 for resource in self.nondisp.index:
                     
                     #Nondispatchable resources can only generate their hourly profile scaled by nameplate capacity to help fulfill demand. 
-                    profile_max = max(profiles[resource])
-                    scaling_coefficient = profiles.loc[ind, resource] / profile_max
+                    profile_max = max(self.profiles[resource])
+                    scaling_coefficient = self.profiles.loc[ind, resource] / profile_max
                     
                     nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
 
@@ -523,12 +480,6 @@ class LinearProgram(object):
                         if self.fulfill_demand_constraint == True:
                             fulfill_demand.SetCoefficient(var, scaling_coefficient)
                             
-                            if scaling_coefficient < self.lowest_coefficient:
-                                self.lowest_coefficient = scaling_coefficient
-                    
-                            if scaling_coefficient > self.highest_coefficient:
-                                self.highest_coefficient = scaling_coefficient
-                        
 #                         for key,constraint in over_build_dict.items():
 #                             #Add generation from cumulative capacity of the given resource to the over_build constraints in that hour.
 #                             if key == resource:
@@ -542,15 +493,7 @@ class LinearProgram(object):
                                 if self.storage_charge_constraint == True:
                                     storage_charge.SetCoefficient(var, scaling_coefficient)
                                 
-                                    if scaling_coefficient < self.lowest_coefficient:
-                                        self.lowest_coefficient = scaling_coefficient
-                    
-                                    if scaling_coefficient > self.highest_coefficient:
-                                        self.highest_coefficient = scaling_coefficient
-                        
-                                
-                    
-                    #Get the coefficient of capacity variable and change coefficient to incorporate value of additional energy generated in this hour.
+                     #Get the coefficient of capacity variable and change coefficient to incorporate value of additional energy generated in this hour.
                     capacity_variable_current_build_year = self.capacity_vars[resource][-1]
                     
                     existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
@@ -582,11 +525,6 @@ class LinearProgram(object):
                     new_coefficient = existing_coeff + coefficient_adjustment
                     objective.SetCoefficient(capacity_variable_current_build_year, new_coefficient)
                     
-                    if new_coefficient < self.lowest_coefficient:
-                        self.lowest_coefficient = new_coefficient
-                    
-                    if new_coefficient > self.highest_coefficient:
-                        self.highest_coefficient = new_coefficient
 
                 
                 #Create hourly charge and discharge variables for each storage resource and store in respective dictionaries. 
@@ -604,13 +542,7 @@ class LinearProgram(object):
                         if self.discharge_zero_constraint == True:
                             discharge_zero_constraint= self.solver.Constraint(0, 0)
                             discharge_zero_constraint.SetCoefficient(discharge, 1)
-                            
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-                    
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
-                        
+
 
 #                     for key,constraint in over_build_dict.items():
 #                         #Add charge and discharge from given storage resource to the over_build constraints in that hour.
@@ -620,12 +552,7 @@ class LinearProgram(object):
                     if self.storage_can_charge_from_grid == False:
                         if self.storage_charge_constraint ==True:
                             storage_charge.SetCoefficient(charge, -1)
-                    
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
-                    
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
+
                     
                     #Add variable cost of charging to objective function. If storage charges from grid, add monetized grid emissions to variable cost. #Note: variable cost should include the wholesale cost of electricity for charging storage.
                     cost_type_inds = self.resource_costs['cost_type']=='variable_per_mwh'
@@ -648,19 +575,8 @@ class LinearProgram(object):
                     
                     objective.SetCoefficient(charge, variable_cost_with_value_additional_energy)
                     
-                    if variable_cost_with_value_additional_energy < self.lowest_coefficient:
-                        self.lowest_coefficient = variable_cost_with_value_additional_energy
-                    
-                    if variable_cost_with_value_additional_energy > self.highest_coefficient:
-                        self.highest_coefficient = variable_cost_with_value_additional_energy
-                    
                     objective.SetCoefficient(discharge, -value_additional_energy_mwh)
-                    
-                    if -value_additional_energy_mwh < self.lowest_coefficient:
-                        self.lowest_coefficient = -value_additional_energy_mwh
-                    
-                    if -value_additional_energy_mwh > self.highest_coefficient:
-                        self.highest_coefficient = -value_additional_energy_mwh
+
 
                     #Limit hourly charge and discharge variables to storage max power (MW). 
                     #Sum storage capacity from previous and current build years to set max power.
@@ -671,24 +587,14 @@ class LinearProgram(object):
                         if self.storage.loc[resource, 'resilient'] == 'y':
                             #For resilient storage, limit max charge to the fraction of capacity set aside for the grid.
                             max_charge.SetCoefficient(var, self.resilient_storage_grid_fraction)
-                            
-                            if self.resilient_storage_grid_fraction < self.lowest_coefficient:
-                                self.lowest_coefficient = self.resilient_storage_grid_fraction
-                    
-                            if self.resilient_storage_grid_fraction > self.highest_coefficient:
-                                self.highest_coefficient = self.resilient_storage_grid_fraction
+
                         else: 
                             max_charge.SetCoefficient(var, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-                    
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                     
                     max_charge.SetCoefficient(charge, -1)
                     
-                    #*** Is discharge
+                    #*** Is discharge supposed to be constrained to zero here?
                     if year == 0 and ind == self.demand_profile.index[0]:  #self.demand_hour_start:
                         max_discharge= self.solver.Constraint(0, self.solver.infinity())
                         var = self.storage_capacity_vars[resource][0]
@@ -716,30 +622,14 @@ class LinearProgram(object):
                             if self.storage.loc[resource, 'resilient'] == 'y':
                             #For resilient storage, limit max charge and discharge to the fraction of capacity set aside for the grid.
                                 max_discharge.SetCoefficient(var, self.resilient_storage_grid_fraction)
-                                
-                                if self.resilient_storage_grid_fraction < self.lowest_coefficient:
-                                    self.lowest_coefficient = self.resilient_storage_grid_fraction
-                    
-                                if self.resilient_storage_grid_fraction > self.highest_coefficient:
-                                    self.highest_coefficient = self.resilient_storage_grid_fraction
-                                
+                            
                                 
                             else: 
                                 max_discharge.SetCoefficient(var, 1)
                                 
-                                if 1 < self.lowest_coefficient:
-                                    self.lowest_coefficient = 1
-                    
-                                if 1 > self.highest_coefficient:
-                                    self.highest_coefficient = 1
                                 
                         max_discharge.SetCoefficient(discharge, -1)
                         
-                        if -1 < self.lowest_coefficient:
-                            self.lowest_coefficient = -1
-
-                        if -1 > self.highest_coefficient:
-                            self.highest_coefficient = -1
                     
                         
                     #Keep track of hourly charge and discharge variables by appending to lists for each storage resource.
@@ -749,25 +639,13 @@ class LinearProgram(object):
                     #Hourly discharge variables of storage resources are incorporated into the fulfill demand constraint. If storage can only charge from portfolio resources, include the charge variable in this constraint.
                     if self.fulfill_demand_constraint == True:
                         fulfill_demand.SetCoefficient(discharge, efficiency)
-                        
-                        if efficiency < self.lowest_coefficient:
-                            self.lowest_coefficient = efficiency
-                    
-                        if efficiency > self.highest_coefficient:
-                            self.highest_coefficient = efficiency
-                        
-                        
+                               
                     
                     #Include the line below if storage cannot charge from grid (and can only charge from portfolio resources).
                     if self.storage_can_charge_from_grid == False:
                         if self.fulfill_demand_constraint == True:
                             fulfill_demand.SetCoefficient(charge, -1)
-                            
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
-                    
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
+
 
                     #Creates hourly state of charge variable, representing the state of charge at the end of each timestep. 
                     state_of_charge= self.solver.NumVar(0, self.solver.infinity(), 'state_of_charge_year'+ str(year) + '_hour' + str(ind))
@@ -777,65 +655,29 @@ class LinearProgram(object):
                         state_of_charge_constraint= self.solver.Constraint(0, 0)
                         state_of_charge_constraint.SetCoefficient(state_of_charge, -1)
                         
-                        if -1 < self.lowest_coefficient:
-                            self.lowest_coefficient = -1
-                    
-                        if -1 > self.highest_coefficient:
-                            self.highest_coefficient = -1
                             
                         state_of_charge_constraint.SetCoefficient(discharge, -1)
                         
-                        if -1 < self.lowest_coefficient:
-                            self.lowest_coefficient = -1
-                    
-                        if -1 > self.highest_coefficient:
-                            self.highest_coefficient = -1
                             
                         #To-Do: Should coefficient here be "efficiency" to represent lost power during charging?
                         state_of_charge_constraint.SetCoefficient(charge, 1)
                         
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-                    
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
-
                         #Get the state of charge from previous timestep to include in the state_of_charge_constraint.
                         previous_state = self.storage_state_of_charge_vars[resource][-1]
                         state_of_charge_constraint.SetCoefficient(previous_state, 1)
                         
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-                    
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
                         
                     else: 
                         state_of_charge_constraint= self.solver.Constraint(self.initial_state_of_charge, self.initial_state_of_charge)
                         state_of_charge_constraint.SetCoefficient(state_of_charge, 1)
                         
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-                    
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
                             
                         state_of_charge_constraint.SetCoefficient(discharge, 1)
                         
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-                    
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
                             
                         #To-Do: Should coefficient here be "efficiency" to represent lost power during charging?
                         state_of_charge_constraint.SetCoefficient(charge, -1)
                         
-                        if -1 < self.lowest_coefficient:
-                            self.lowest_coefficient = -1
-                    
-                        if -1 > self.highest_coefficient:
-                            self.highest_coefficient = -1
 
                     #Add hourly state of charge variable to corresponding list for each storage resource.
                     self.storage_state_of_charge_vars[resource].append(state_of_charge)
@@ -848,39 +690,17 @@ class LinearProgram(object):
                             #For resilient storage, limit max storage to the fraction of capacity set aside for the grid * storage_duration.
                             max_storage.SetCoefficient(var, self.resilient_storage_grid_fraction*storage_duration)
                             
-                            if self.resilient_storage_grid_fraction*storage_duration < self.lowest_coefficient:
-                                self.lowest_coefficient = self.resilient_storage_grid_fraction*storage_duration
-                    
-                            if self.resilient_storage_grid_fraction*storage_duration > self.highest_coefficient:
-                                self.highest_coefficient = self.resilient_storage_grid_fraction*storage_duration
                         else: 
                             max_storage.SetCoefficient(var, storage_duration)
-                            
-                            if storage_duration < self.lowest_coefficient:
-                                self.lowest_coefficient = storage_duration
-                    
-                            if storage_duration > self.highest_coefficient:
-                                self.highest_coefficient = storage_duration
                             
                             
                     max_storage.SetCoefficient(state_of_charge, -1)
                     
-                    if -1 < self.lowest_coefficient:
-                        self.lowest_coefficient = -1
-
-                    if -1 > self.highest_coefficient:
-                        self.highest_coefficient = -1
 
                     #Creates constraint ensuring that no net energy is supplied by storage (ending state of charge is equal to initial state of charge).
-                    if year == (self.build_years-1) and ind == len(self.demand_profile)-1: #self.demand_hour_start + self.demand_length_hours:(len(profiles)-1):
+                    if year == (self.build_years-1) and ind == len(self.demand_profile)-1: #self.demand_hour_start + self.demand_length_hours:(len(self.profiles)-1):
                         ending_state = self.solver.Constraint(self.initial_state_of_charge, self.initial_state_of_charge)
                         ending_state.SetCoefficient(state_of_charge, 1)
-                        
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
                         
                         
                 #Loop through dispatchable resources.
@@ -896,34 +716,18 @@ class LinearProgram(object):
                         if self.gen_zero_constraint == True:
                             gen_zero_constraint = self.solver.Constraint(0, 0)
                             gen_zero_constraint.SetCoefficient(gen, 1)
-                            
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                     
                     if resource == 'ci_shed_nonwatersystem':
                         if self.dr_shed_yearly_limit_constraint == True:
                             dr_shed_yearly_limit.SetCoefficient(gen, -1)
                             
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
-
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
                             
                         if self.dr_shed_daily_limit_constraint == True:
                             
                             if ind%24 == 0:
                                 dr_shed_daily_limit.SetCoefficient(gen, -1)
 
-                                if -1 < self.lowest_coefficient:
-                                    self.lowest_coefficient = -1
-
-                                if -1 > self.highest_coefficient:
-                                    self.highest_coefficient = -1
-                            
                     
 #                     for key,constraint in over_build_dict.items():
 #                         #Add generation from given dispatchable resource to the over_build constraints in that hour.
@@ -932,12 +736,7 @@ class LinearProgram(object):
                     if self.storage_can_charge_from_grid == False:
                         if self.storage_charge_constraint == True:
                             storage_charge.SetCoefficient(gen, 1)
-                        
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
 
                     #Append hourly gen variable to the list for that resource, located in the disp_gen dictionary.
                     self.disp_gen[resource].append(gen)
@@ -975,22 +774,12 @@ class LinearProgram(object):
                     
                     #Incorporate extrapolated variable cost of hourly gen for each disp resource into objective function.
                     objective.SetCoefficient(gen, variable_cost_discounted)
-                    
-                    if variable_cost_discounted < self.lowest_coefficient:
-                        self.lowest_coefficient = variable_cost_discounted
 
-                    if variable_cost_discounted > self.highest_coefficient:
-                        self.highest_coefficient = variable_cost_discounted
 
                     #Add hourly gen variables for disp resources to the fulfill_demand constraint.
                     if self.fulfill_demand_constraint == True:
                         fulfill_demand.SetCoefficient(gen, 1)
-                        
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
 
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
 
                     #Initialize max_gen constraint: hourly gen must be less than or equal to capacity for each dispatchable resource.
                     max_gen = self.solver.Constraint(0, self.solver.infinity())
@@ -1001,36 +790,14 @@ class LinearProgram(object):
                         harbor_capacity = self.capacity_vars[resource][year]
                         max_gen.SetCoefficient(harbor_capacity, 1)
                         
-                        if 1 < self.lowest_coefficient:
-                            self.lowest_coefficient = 1
-
-                        if 1 > self.highest_coefficient:
-                            self.highest_coefficient = 1
-                    
                     else:
                         for i, var in enumerate(disp_capacity_cumulative):
                             max_gen.SetCoefficient(var, 1)
-                            
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                             
                     max_gen.SetCoefficient(gen, -1)
                     
-                    if -1 < self.lowest_coefficient:
-                        self.lowest_coefficient = -1
-
-                    if -1 > self.highest_coefficient:
-                        self.highest_coefficient = -1
-                        
-                    
-
-
-        print('coefficient_range =')
-        print(self.lowest_coefficient)
-        print(self.highest_coefficient)
+                
         
         return objective
 
@@ -1052,15 +819,15 @@ class LinearProgram(object):
         return discount_factor
     
     
-    def _setup_resources(self):
-        resources = pd.read_csv('data/resources.csv')
+#     def _setup_resources(self):
+#         resources = pd.read_csv('data/resources.csv')
     
-        if self.selected_resource != 'all':
-            resources = resources[resources['resource']==self.selected_resource]
+#         if self.selected_resource != 'all':
+#             resources = resources[resources['resource']==self.selected_resource]
             
-        resources = resources.set_index('resource')
+#         resources = resources.set_index('resource')
         
-        return resources
+#         return resources
     
     def _setup_resource_costs(self):
         if self.ee_cost_type == 'utility_side':
@@ -1073,18 +840,17 @@ class LinearProgram(object):
         return resource_costs
 
         
-    def _setup_storage(self):
-        storage = pd.read_csv('data/storage.csv')
-        num_columns = storage.columns[3:]
-        storage[num_columns] = storage[num_columns].astype(float)
-        storage = storage.set_index('resource')
+#     def _setup_storage(self):
+#         storage = pd.read_csv('data/storage.csv')
+#         num_columns = storage.columns[3:]
+#         storage[num_columns] = storage[num_columns].astype(float)
+#         storage = storage.set_index('resource')
         
-        return storage
+#         return storage
     
     
     def _initialize_capacity_by_resource(self, build_years):
         capacity_by_resource = {}
-        ee_resource_potential = pd.read_csv('data/ee_resource_potential_2020_2030.csv')
         
         for resource in self.resources.index:
             
@@ -1094,11 +860,11 @@ class LinearProgram(object):
                 #Create list of capacity variables for each year of build.
                 
                 if 'FCZ7' in resource:
-                    resource_inds = ee_resource_potential['resource']==resource
+                    resource_inds = self.ee_resource_potential['resource']==resource
                     if resource_inds.sum()>0:
                         for year in range(build_years):
                             calendar_year = self.build_start_year + year
-                            ee_max_mw = ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
+                            ee_max_mw = self.ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
                             print(resource, year, ee_max_mw)
                             capacity = self.solver.NumVar(0, ee_max_mw, str(resource)+ '_' + str(year))
                             capacity_by_build_year.append(capacity)
@@ -1110,7 +876,7 @@ class LinearProgram(object):
                         capacity_by_resource[resource] = capacity_by_build_year
                 else:
                     for year in range(build_years):
-                        capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
+                        capacity = self.solver.NumVar(0, 5, str(resource)+ '_' + str(year))
                         capacity_by_build_year.append(capacity)
 
                     #Add residential solar to residential storage resource limit constraint. For SFH, ratio of storage to solar is 1 (5kw solar + 5kw storage). All ratios are currently 1.
@@ -1118,31 +884,14 @@ class LinearProgram(object):
                         if self.residential_storage_potential_limit_SF_constraint == True:
                             self.residential_storage_potential_limit_SF.SetCoefficient(capacity, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
-                                
                     if resource == 'solar_rooftop_residentialMF':
                         if self.residential_storage_potential_limit_MF_constraint == True:
                             self.residential_storage_potential_limit_MF.SetCoefficient(capacity, 1)
-                            
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                                 
                     if resource == 'solar_rooftop_ci':
                         if self.commercial_storage_potential_limit_constraint == True:
                             self.commercial_storage_potential_limit.SetCoefficient(capacity, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
 
                     capacity_by_resource[resource] = capacity_by_build_year
             else:
@@ -1161,15 +910,10 @@ class LinearProgram(object):
                 
         return capacity_by_resource
     
-    
-    
-    
-    
-    
+
     
     def _initialize_capacity_by_resource(self, build_years):
         capacity_by_resource = {}
-        ee_resource_potential = pd.read_csv('data/ee_resource_potential_2020_2030.csv')
         
         for resource in self.resources.index:
             
@@ -1179,11 +923,11 @@ class LinearProgram(object):
                 #Create list of capacity variables for each year of build.
                 
                 if 'FCZ7' in resource:
-                    resource_inds = ee_resource_potential['resource']==resource
+                    resource_inds = self.ee_resource_potential['resource']==resource
                     if resource_inds.sum()>0:
                         for year in range(build_years):
                             calendar_year = self.build_start_year + year
-                            ee_max_mw = ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
+                            ee_max_mw = self.ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
                             capacity = self.solver.NumVar(0, ee_max_mw, str(resource)+ '_' + str(year))
                             capacity_by_build_year.append(capacity)
                         capacity_by_resource[resource] = capacity_by_build_year
@@ -1202,30 +946,16 @@ class LinearProgram(object):
                     if resource == 'solar_rooftop_residentialSF':
                         if self.residential_storage_potential_limit_SF_constraint == True:
                             self.residential_storage_potential_limit_SF.SetCoefficient(capacity, 1)
-                            
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                     if resource == 'solar_rooftop_residentialMF':
                         if self.residential_storage_potential_limit_MF_constraint == True:
                             self.residential_storage_potential_limit_MF.SetCoefficient(capacity, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                     if resource == 'solar_rooftop_ci':
                         if self.commercial_storage_potential_limit_constraint == True:
                             self.commercial_storage_potential_limit.SetCoefficient(capacity, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
-
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
 
                     capacity_by_resource[resource] = capacity_by_build_year
             else:
@@ -1270,38 +1000,20 @@ class LinearProgram(object):
                         if self.utility_storage_limit_constraint == True:
                             utility_storage_limit.SetCoefficient(capacity, 1)
                             
-                            if 1 < self.lowest_coefficient:
-                                self.lowest_coefficient = 1
 
-                            if 1 > self.highest_coefficient:
-                                self.highest_coefficient = 1
                     elif resource == 'storage_residentialSF_4hr':
                         if self.residential_storage_potential_limit_SF_constraint == True:
                             self.residential_storage_potential_limit_SF.SetCoefficient(capacity, -1)
                             
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
 
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
                     elif resource == 'storage_residentialMF_4hr':
                         if self.residential_storage_potential_limit_MF_constraint == True:
                             self.residential_storage_potential_limit_MF.SetCoefficient(capacity, -1)
                             
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
-
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
                     elif resource == 'storage_ci_4hr':
                         if self.commercial_storage_potential_limit_constraint == True:
                             self.commercial_storage_potential_limit.SetCoefficient(capacity, -1)
                             
-                            if -1 < self.lowest_coefficient:
-                                self.lowest_coefficient = -1
-
-                            if -1 > self.highest_coefficient:
-                                self.highest_coefficient = -1
                     
                 storage_capacity_vars[resource] = storage_capacity_by_build_year
 
@@ -1330,10 +1042,10 @@ class LinearProgram(object):
         
 #         return ladwp_marginal_healthdamages
     
-    def _setup_health_costs_emissions_la(self):
-        health_costs_emissions_la = pd.read_csv('data/pollutant_health_impacts/COBRA_LADWPplants_healthCosts.csv')
+#     def _setup_health_costs_emissions_la(self):
+#         health_costs_emissions_la = pd.read_csv('data/pollutant_health_impacts/COBRA_LADWPplants_healthCosts.csv')
         
-        return health_costs_emissions_la
+#         return health_costs_emissions_la
     
 
     def solve(self):
@@ -1356,11 +1068,8 @@ class LinearProgram(object):
             # No optimal solution was found.
             print('A potentially suboptimal solution was found.')
             
-
-            
         elif status == self.solver.INFEASIBLE:
             print('The solver could not find a feasible solution.')
-            
             
         elif status == self.solver.UNBOUNDED:
             print('The linear program is unbounded.')
@@ -1370,9 +1079,178 @@ class LinearProgram(object):
             print("Solver exited with error code {}".format(status))
         return status
             
+    def results_to_csv(self, today_date, string_to_identify_lp_run):
+        
+        input_param_list = [
+            'solver_type',
+            'selected_resource', 
+            'initial_state_of_charge', 
+            'storage_lifespan', 
+            'portfolio_timespan',
+            'storage_can_charge_from_grid', 
+            'wholesale_cost_electricity_mwh',
+            'discount_rate', 
+            'cost', 
+            'health_cost_range',
+            'cost_projections',
+            'build_start_year', 
+            'harbor_retirement_year',
+            'ee_cost_type', 
+            'transmission_capex_cost_per_mw',
+            'transmission_annual_cost_per_mw', 
+            'storage_resilience_incentive_per_kwh', 
+            'resilient_storage_grid_fraction', 
+            'social_cost_carbon_short_ton', 
+            'avoided_marginal_generation_cost_per_mwh', 
+            'diesel_genset_carbon_per_mw',
+            'diesel_genset_pm25_per_mw', 
+            'diesel_genset_nox_per_mw', 
+            'diesel_genset_so2_per_mw', 
+            'diesel_genset_pm10_per_mw', 
+            'diesel_genset_fixed_cost_per_mw_year', 
+            'diesel_genset_mmbtu_per_mwh', 
+            'diesel_genset_cost_per_mmbtu', 
+            'diesel_genset_run_hours_per_year',
+        ]
+        
+        input_df_list = [
+            'demand_profile',
+            'ladwp_marginal_co2',
+            'ladwp_marginal_healthdamages',
+            'profiles',
+            'ee_resource_potential',
+            'resources',
+            'storage',
+            'health_cost_emissions_la',
+        ]
+
+
+        results_dict = self.__dict__
+
+        solver_type = results_dict['solver_type']
+        harbor_retirement_year = results_dict['harbor_retirement_year'].astype(str)
+        if self.solve() == 0:
+            solution_result = 'OPTIMAL'
+        if self.solve() == 1:
+            solution_result = 'FEASIBLE'
+        if self.solve() == 2:
+            solution_result = 'INFEASIBLE'
+        if self.solve() == 3:
+            solution_result = 'UNBOUNDED'
+        if self.solve() == 4:
+            solution_result = 'ABNORMAL'
+
+        folder_name = solver_type + str(string_to_identify_lp_run) +'_retirement'+ harbor_retirement_year + '_' + solution_result +'_' + str(today_date) + str(np.random.rand(1,1).item())
+        path = os.path.join('model_run_results', folder_name)
+        os.mkdir(path)
+
+        model_inputs_df = pd.DataFrame({'input':input_param_list})
+
+        for input_name in input_param_list:
+            input_value = results_dict[input_name]
+            input_name_inds = model_inputs_df['input']==input_name
+            model_inputs_df.loc[input_name_inds,'value']=input_value
+        model_inputs_df.to_csv(path+'/input_parameter_values.csv')
+
+        for input_df in input_df_list:
+            df = results_dict[input_df]
+            df.to_csv(path+'/'+input_df+'.csv')
+
+        #Get capacity results for each year and save as csv.
+        build_years = int(harbor_retirement_year)-2020+1
+        for year in range(build_years):
+
+            capacities_mw = self.get_capacities_mw(year).items()
+            if year == 0:
+                resource_list = list(self.get_capacities_mw(year).keys())
+                capacities_df = pd.DataFrame({'resource':resource_list})
+
+            capacities = list(self.get_capacities_mw(year).values())
+
+            capacity_year = year + 2020
+            capacities_df[str(capacity_year)] = capacities
+
+        capacities_df['Units']='MW'
+
+        capacities_df.to_csv(path+'/capacity_results_mw.csv')
+        
+        #Get generation results for each year and save as separate csvs.
+#         nonstorage_resources = [s for s in resource_list if 'storage' not in s]
+#         storage_resources = [s for s in resource_list if 'storage' in s]
+
+        for year in range(build_years):
+
+            hourly_gen_df = pd.DataFrame()
+            hourly_storage_df = pd.DataFrame()
+
+            results_hour_start = 8760*year
+            results_hour_end = 8760*year + 8760
+
+            resource_gen_dict = {}
+            storage_charge_dict = {}
+            storage_discharge_dict = {}
+
+            for resource in self.disp.index:
+                gen_list = []
+                for i_gen in self.disp_gen[resource][results_hour_start:results_hour_end]:
+                    gen = i_gen.solution_value()
+                    gen_list.append(gen)
+                if any(gen_list):
+                    print(resource)
+                    resource_gen_dict[resource]=gen_list
+
+            for resource in self.nondisp.index:
+                profile_max = max(self.profiles[resource])
+                profile = self.profiles[resource] / profile_max
+
+                capacity = self.capacity_vars[resource][year].solution_value()
+
+                gen_list = profile * capacity
+                if any(gen_list):
+                    print(resource)
+                    resource_gen_dict[resource]=gen_list
+
+            for resource in self.storage.index:
+                storage_hourly_charge = []
+                for i,var in enumerate(self.storage_charge_vars[resource]):
+                    charge = var.solution_value()
+                    storage_hourly_charge.append(-charge)
+
+                storage_hourly_charge = storage_hourly_charge[results_hour_start:results_hour_end]
+
+                if any(storage_hourly_charge):
+                    storage_charge_dict[resource + '_CHARGE'] = storage_hourly_charge
+
+            for resource in self.storage.index:
+                storage_hourly_discharge = []
+                for i,var in enumerate(self.storage_discharge_vars[resource]):
+                    discharge = var.solution_value() * self.storage.loc[resource, 'efficiency']
+                    storage_hourly_discharge.append(discharge)
+
+                    storage_hourly_discharge = storage_hourly_discharge[results_hour_start:results_hour_end]
+                if any(storage_hourly_discharge):
+                    storage_discharge_dict[resource + '_DISCHARGE']=storage_hourly_discharge
+
+            all_gen_resources = list(resource_gen_dict.keys())
+            all_storage_resources = list(storage_charge_dict.keys())
+
+            for resource in all_gen_resources:
+                print(resource)
+                hourly_gen = resource_gen_dict[resource]
+                hourly_gen_df[str(resource)]= hourly_gen
+            hourly_gen_df.to_csv(path+'/hourly_generation_results_mwh_year{}.csv'.format(year))
+
+            for resource in all_storage_resources:
+                hourly_charge = storage_charge_dict[resource]
+                hourly_discharge = storage_discharge_dict[resource]
+
+                hourly_storage_df[str(resource)+'_charge']= hourly_charge
+                hourly_storage_df[str(resource)+'_discharge']= hourly_discharge
+            hourly_storage_df.to_csv(path+'/hourly_storage_results_mwh_year{}.csv'.format(year))
+
        
-    #Need to update this function.
     
+    #Need to update this function.
     def get_lcoe_per_mwh(self):
         
         #Change code to write a csv of LCOE for each resource in each build year.
@@ -1438,8 +1316,8 @@ class LinearProgram(object):
 
                 elif resource in self.nondisp.index:
 
-                    profile_max = max(profiles[resource])
-                    summed_gen = sum(profiles[resource] / profile_max)
+                    profile_max = max(self.profiles[resource])
+                    summed_gen = sum(self.profiles[resource] / profile_max)
                     
                     #Add variable costs extrapolated over portfolio timespan to lcoe dictionary.
                     self.lcoe_dict[year][resource]['variable_extrapolated']=self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item() * summed_gen * self.discounting_factor[build_year]
@@ -1467,8 +1345,14 @@ class LinearProgram(object):
         for resource in self.capacity_vars:
             capacity = self.capacity_vars[resource][build_year].solution_value()
             capacities[resource] = capacity
+            
+        for resource in self.storage_capacity_vars:
+            capacity = self.storage_capacity_vars[resource][build_year].solution_value()
+            capacities[resource] = capacity
         
         return capacities
+    
+    
     
     
     def get_capacity_fractions(self, build_year):
@@ -1492,7 +1376,6 @@ class LinearProgram(object):
     def get_generation_mwh(self, build_year):
 
         generation_by_resource = {}
-        profiles = pd.read_csv('data/gen_profiles.csv')
         
         #Get range of hours in selected build_year to index correctly into the list of generation variables.
         start_hour = build_year*8760
@@ -1506,8 +1389,8 @@ class LinearProgram(object):
             generation_by_resource[resource] = summed_gen
 
         for resource in self.nondisp.index:
-            profile_max = max(profiles[resource])
-            summed_gen = sum(profiles[resource]) / profile_max
+            profile_max = max(self.profiles[resource])
+            summed_gen = sum(self.profiles[resource]) / profile_max
             capacity = self.capacity_vars[resource][build_year].solution_value()
             gen = summed_gen * capacity
             generation_by_resource[resource] = gen
@@ -1527,7 +1410,7 @@ class LinearProgram(object):
                 
             
 # Change the code below to create a function that gets the generation fraction for each resource in a given year.    
-#         profiles = pd.read_csv('data/gen_profiles.csv')
+#         self.profiles = pd.read_csv('data/gen_self.profiles.csv')
 #         #Sum total annual generation across all resources.
         
 #         total_gen = 0
@@ -1540,8 +1423,8 @@ class LinearProgram(object):
 #             gen_fractions[resource] = fraction_generation
 
 #         for resource in self.nondisp.index:
-#             profile_max = max(profiles[resource])
-#             summed_gen = sum(profiles[resource]) / profile_max
+#             profile_max = max(self.profiles[resource])
+#             summed_gen = sum(self.profiles[resource]) / profile_max
 #             capacity = self.capacity_vars[resource].solution_value()
 #             gen = summed_gen * capacity
 #             fraction_generation = gen / total_gen

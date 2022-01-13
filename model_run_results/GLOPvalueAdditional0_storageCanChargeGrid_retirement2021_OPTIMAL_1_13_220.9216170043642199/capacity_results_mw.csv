@@ -1,0 +1,112 @@
+,resource,2020,2021,Units
+0,gas_harbor,0.05716657033650546,0.0,MW
+1,gas_ct,0.0,0.0,MW
+2,ci_shed_nonwatersystem,180.06957654146797,0.0,MW
+3,utility_solar_inbasin_rsCrsQ,0.0,0.0,MW
+4,utility_solar_outofbasin,0.0,0.0,MW
+5,commercial_solar,0.0,0.0,MW
+6,residential_solar,0.0,0.0,MW
+7,FCZ7.Commercial.College.Cooling,0.0,0.0,MW
+8,FCZ7.Commercial.College.Heating,0.0,0.0,MW
+9,FCZ7.Commercial.College.IndoorLightingEff,0.0,0.0,MW
+10,FCZ7.Commercial.College.OfficeEquipment,0.0,0.0,MW
+11,FCZ7.Commercial.College.OutdoorLighting,0.0,0.0,MW
+12,FCZ7.Commercial.College.Refrigeration,0.0,0.0,MW
+13,FCZ7.Commercial.College.Ventilation,0.005477856,0.01042905,MW
+14,FCZ7.Commercial.College.WaterHeating,0.0,0.0,MW
+15,FCZ7.Commercial.Food.Cooling,0.0,0.0,MW
+16,FCZ7.Commercial.Food.Heating,0.0,0.0,MW
+17,FCZ7.Commercial.Food.IndoorLightingEff,0.0,0.0,MW
+18,FCZ7.Commercial.Food.OfficeEquipment,3.04e-05,0.0,MW
+19,FCZ7.Commercial.Food.OutdoorLighting,0.0,0.0,MW
+20,FCZ7.Commercial.Food.Refrigeration,0.0,0.0,MW
+21,FCZ7.Commercial.Food.Ventilation,0.0030323679999999997,0.0057731909999999996,MW
+22,FCZ7.Commercial.Food.WaterHeating,0.0,0.0,MW
+23,FCZ7.Commercial.Health Care.Cooling,0.0,0.0,MW
+24,FCZ7.Commercial.Health Care.Heating,0.0,0.0,MW
+25,FCZ7.Commercial.Health Care.IndoorLightingEff,0.0,0.0,MW
+26,FCZ7.Commercial.Health Care.OfficeEquipment,0.0,0.0,MW
+27,FCZ7.Commercial.Health Care.OutdoorLighting,0.0,0.0,MW
+28,FCZ7.Commercial.Health Care.Refrigeration,0.0,0.0,MW
+29,FCZ7.Commercial.Health Care.Ventilation,0.004168725,0.007936651999999999,MW
+30,FCZ7.Commercial.Health Care.WaterHeating,0.0,0.0,MW
+31,FCZ7.Commercial.Hotel.Cooking,0.0,0.0,MW
+32,FCZ7.Commercial.Hotel.Cooling,0.0,0.0,MW
+33,FCZ7.Commercial.Hotel.Heating,0.0,0.0,MW
+34,FCZ7.Commercial.Hotel.IndoorLightingEff,0.0,0.0,MW
+35,FCZ7.Commercial.Hotel.OfficeEquipment,5.62e-06,0.0,MW
+36,FCZ7.Commercial.Hotel.OutdoorLighting,0.0,0.0,MW
+37,FCZ7.Commercial.Hotel.Refrigeration,0.0,0.0,MW
+38,FCZ7.Commercial.Hotel.Ventilation,0.001476024,0.002810138,MW
+39,FCZ7.Commercial.Hotel.WaterHeating,0.0,0.0,MW
+40,FCZ7.Commercial.Miscellaneous.Cooking,0.0,0.0,MW
+41,FCZ7.Commercial.Miscellaneous.Cooling,0.0,0.0,MW
+42,FCZ7.Commercial.Miscellaneous.Heating,0.0,0.0,MW
+43,FCZ7.Commercial.Miscellaneous.IndoorLightingEff,0.0,0.0,MW
+44,FCZ7.Commercial.Miscellaneous.OfficeEquipment,0.0,0.0,MW
+45,FCZ7.Commercial.Miscellaneous.OutdoorLighting,0.0,0.0,MW
+46,FCZ7.Commercial.Miscellaneous.Refrigeration,0.0,0.0,MW
+47,FCZ7.Commercial.Miscellaneous.Ventilation,0.0067304669999999995,0.01281384,MW
+48,FCZ7.Commercial.Miscellaneous.WaterHeating,0.0,0.0,MW
+49,FCZ7.Commercial.Office.Cooling,0.0,0.0,MW
+50,FCZ7.Commercial.Office.Heating,0.0,0.0,MW
+51,FCZ7.Commercial.Office.IndoorLightingEff,0.0,0.0,MW
+52,FCZ7.Commercial.Office.OfficeEquipment,0.0,0.0,MW
+53,FCZ7.Commercial.Office.OutdoorLighting,0.0,0.0,MW
+54,FCZ7.Commercial.Office.Refrigeration,0.0,0.0,MW
+55,FCZ7.Commercial.Office.Ventilation,0.033524275,0.063825391,MW
+56,FCZ7.Commercial.Office.WaterHeating,0.0,0.0,MW
+57,FCZ7.Commercial.Refrigerated Warehouse.Cooling,0.0,0.0,MW
+58,FCZ7.Commercial.Refrigerated Warehouse.Heating,0.0,0.0,MW
+59,FCZ7.Commercial.Refrigerated Warehouse.IndoorLightingEff,0.0,0.0,MW
+60,FCZ7.Commercial.Refrigerated Warehouse.OfficeEquipment,0.0,0.0,MW
+61,FCZ7.Commercial.Refrigerated Warehouse.OutdoorLighting,0.0,0.0,MW
+62,FCZ7.Commercial.Refrigerated Warehouse.Refrigeration,0.0,0.0,MW
+63,FCZ7.Commercial.Refrigerated Warehouse.Ventilation,1.87e-05,3.5600000000000005e-05,MW
+64,FCZ7.Commercial.Refrigerated Warehouse.WaterHeating,0.0,0.0,MW
+65,FCZ7.Commercial.Restaurant.Cooling,0.0,0.0,MW
+66,FCZ7.Commercial.Restaurant.Heating,0.0,0.0,MW
+67,FCZ7.Commercial.Restaurant.IndoorLightingEff,0.0,0.0,MW
+68,FCZ7.Commercial.Restaurant.OfficeEquipment,5.11e-06,6.87e-05,MW
+69,FCZ7.Commercial.Restaurant.OutdoorLighting,0.0,0.0,MW
+70,FCZ7.Commercial.Restaurant.Refrigeration,0.0,0.0,MW
+71,FCZ7.Commercial.Restaurant.Ventilation,0.00445186,0.008475699,MW
+72,FCZ7.Commercial.Restaurant.WaterHeating,0.0,0.0,MW
+73,FCZ7.Commercial.Retail.Cooling,0.0,0.0,MW
+74,FCZ7.Commercial.Retail.Heating,0.0,0.0,MW
+75,FCZ7.Commercial.Retail.IndoorLightingEff,0.0,0.0,MW
+76,FCZ7.Commercial.Retail.OfficeEquipment,0.0,0.0,MW
+77,FCZ7.Commercial.Retail.OutdoorLighting,0.0,0.0,MW
+78,FCZ7.Commercial.Retail.Refrigeration,0.0,0.0,MW
+79,FCZ7.Commercial.Retail.Ventilation,0.004928544,0.009383238,MW
+80,FCZ7.Commercial.Retail.WaterHeating,0.0,0.0,MW
+81,FCZ7.Commercial.School.Cooking,0.0,0.0,MW
+82,FCZ7.Commercial.School.Cooling,0.0,0.0,MW
+83,FCZ7.Commercial.School.Heating,0.0,0.0,MW
+84,FCZ7.Commercial.School.IndoorLightingEff,0.0,0.0,MW
+85,FCZ7.Commercial.School.OfficeEquipment,0.0,0.0,MW
+86,FCZ7.Commercial.School.OutdoorLighting,0.0,0.0,MW
+87,FCZ7.Commercial.School.Refrigeration,0.0,0.0,MW
+88,FCZ7.Commercial.School.Ventilation,0.005179225,0.009860499,MW
+89,FCZ7.Commercial.School.WaterHeating,0.0,0.0,MW
+90,FCZ7.Commercial.Warehouse.Cooking,0.0,0.0,MW
+91,FCZ7.Commercial.Warehouse.Cooling,0.0,0.0,MW
+92,FCZ7.Commercial.Warehouse.Heating,0.0,0.0,MW
+93,FCZ7.Commercial.Warehouse.IndoorLightingEff,0.0,0.0,MW
+94,FCZ7.Commercial.Warehouse.OfficeEquipment,0.0,0.0,MW
+95,FCZ7.Commercial.Warehouse.OutdoorLighting,0.0,0.0,MW
+96,FCZ7.Commercial.Warehouse.Refrigeration,0.0,0.0,MW
+97,FCZ7.Commercial.Warehouse.Ventilation,0.0011482460000000001,0.002186094,MW
+98,FCZ7.Commercial.Warehouse.WaterHeating,0.0,0.0,MW
+99,FCZ7.Residential.MULTIFAMILY.CoolingEff,0.0,0.0,MW
+100,FCZ7.Residential.MULTIFAMILY.Dryer,0.0,0.0,MW
+101,FCZ7.Residential.MULTIFAMILY.Heating,0.0,0.0,MW
+102,FCZ7.Residential.MULTIFAMILY.Refrigerator,0.0,0.0,MW
+103,FCZ7.Residential.MULTIFAMILY.ResLightingEff,0.0,0.0,MW
+104,FCZ7.Residential.MULTIFAMILY.WaterHeating,0.0,0.0,MW
+105,FCZ7.Residential.SINGLEFAMILY.CoolingEff,0.0,0.0,MW
+106,FCZ7.Residential.SINGLEFAMILY.Dryer,0.0,0.0,MW
+107,FCZ7.Residential.SINGLEFAMILY.Heating,0.0,0.0,MW
+108,FCZ7.Residential.SINGLEFAMILY.Refrigerator,0.0,0.0,MW
+109,FCZ7.Residential.SINGLEFAMILY.ResLightingEff,0.0,0.0,MW
+110,FCZ7.Residential.SINGLEFAMILY.WaterHeating,0.0,0.0,MW
