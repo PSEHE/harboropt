@@ -1189,6 +1189,7 @@ class LinearProgram(object):
             resource_gen_dict = {}
             storage_charge_dict = {}
             storage_discharge_dict = {}
+            storage_state_of_charge_dict = {}
 
             for resource in self.disp.index:
                 gen_list = []
@@ -1219,7 +1220,7 @@ class LinearProgram(object):
                 storage_hourly_charge = storage_hourly_charge[results_hour_start:results_hour_end]
 
                 if any(storage_hourly_charge):
-                    storage_charge_dict[resource + '_CHARGE'] = storage_hourly_charge
+                    storage_charge_dict[resource] = storage_hourly_charge
 
             for resource in self.storage.index:
                 storage_hourly_discharge = []
@@ -1229,7 +1230,17 @@ class LinearProgram(object):
 
                     storage_hourly_discharge = storage_hourly_discharge[results_hour_start:results_hour_end]
                 if any(storage_hourly_discharge):
-                    storage_discharge_dict[resource + '_DISCHARGE']=storage_hourly_discharge
+                    storage_discharge_dict[resource]=storage_hourly_discharge
+                    
+            for resource in self.storage.index:
+                storage_hourly_state_of_charge = []
+                for i,var in enumerate(self.storage_state_of_charge_vars[resource]):
+                    state_of_charge = var.solution_value()
+                    storage_hourly_state_of_charge.append(state_of_charge)
+
+                    storage_hourly_state_of_charge = storage_hourly_state_of_charge[results_hour_start:results_hour_end]
+                if any(storage_hourly_state_of_charge):
+                    storage_state_of_charge_dict[resource]=storage_hourly_state_of_charge
 
             all_gen_resources = list(resource_gen_dict.keys())
             all_storage_resources = list(storage_charge_dict.keys())
@@ -1242,10 +1253,16 @@ class LinearProgram(object):
 
             for resource in all_storage_resources:
                 hourly_charge = storage_charge_dict[resource]
-                hourly_discharge = storage_discharge_dict[resource]
+                hourly_storage_df[str(resource)+'_CHARGE']= hourly_charge
 
-                hourly_storage_df[str(resource)+'_charge']= hourly_charge
-                hourly_storage_df[str(resource)+'_discharge']= hourly_discharge
+            for resource in all_storage_resources:
+                hourly_discharge = storage_discharge_dict[resource]
+                hourly_storage_df[str(resource)+'_DISCHARGE']= hourly_discharge
+                
+            for resource in all_storage_resources:
+                hourly_state_of_charge = storage_state_of_charge_dict[resource]
+                hourly_storage_df[str(resource)+'_STATE_OF_CHARGE']= hourly_state_of_charge
+            
             hourly_storage_df.to_csv(path+'/hourly_storage_results_mwh_year{}.csv'.format(year))
 
        
