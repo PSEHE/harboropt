@@ -1,0 +1,12 @@
+﻿resource,potential_type,la100_scenario,load_projection,coincident_type,region,cumulative?,units,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036,2037,2038,2039,2040,2041,2042,2043,2044,2045
+solar_rooftop_ci,economic,ltd_transmission,moderate,na,ladwp,cumulative,MW,2848.00,2892.50,2937.00,2981.50,3026.00,3070.50,3123.90,3177.30,3230.70,3284.10,3337.50,,,,,3560,,,,,3827,,,,,4005
+solar_rooftop_residentialSF,economic,ltd_transmission,moderate,na,ladwp,cumulative,MW,2112.00,2145.00,2178.00,2211.00,2244.00,2277.00,2316.60,2356.20,2395.80,2435.40,2475.00,,,,,2640,,,,,2838,,,,,2970
+solar_rooftop_residentialMF,economic,ltd_transmission,moderate,na,ladwp,cumulative,MW,1440.00,1462.50,1485.00,1507.50,1530.00,1552.50,1579.50,1606.50,1633.50,1660.50,1687.50,,,,,1800,,,,,1935,,,,,2025
+solar_rooftop_ci,economic,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,263.72,267.85,271.97,276.09,280.21,284.33,289.27,294.22,299.16,304.11,309.05,,,,,329.656,,,,,354.3802,,,,,370.863
+solar_rooftop_residentialSF,economic,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,91.24,92.66,94.09,95.52,96.94,98.37,100.08,101.79,103.50,105.21,106.92,,,,,114.048,,,,,122.6016,,,,,128.304
+solar_rooftop_residentialMF,economic,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,71.51,72.63,73.75,74.86,75.98,77.10,78.44,79.78,81.12,82.46,83.80,,,,,89.388,,,,,96.0921,,,,,100.5615
+ci_shed_nonwatersystem,eligible,,moderate,system,ladwp,cumulative,MW,531.00,525.40,519.80,514.20,508.60,503.00,500.00,497.00,494.00,491.00,488.00,,,,,509,,,,,512,,,,,540
+ci_shed_nonwatersystem,eligible,,moderate,system,rsCrsQrsHall,cumulative,MW,38.28,37.88,37.47,37.07,36.66,36.26,36.05,35.83,35.61,35.40,35.18,,,,,36.69381,,,,,36.91008,,,,,38.9286
+res_shift_space_cooling,eligible,,moderate,system,ladwp,cumulative,MW,1833.00,1875.80,1918.60,1961.40,2004.20,2047.00,2034.20,2021.40,2008.60,1995.80,1983.00,,,,,2081,,,,,2145,,,,,2200
+ci_shift_space_cooling,eligible,,moderate,system,ladwp,cumulative,MW,1110.00,1108.40,1106.80,1105.20,1103.60,1102.00,1102.00,1102.00,1102.00,1102.00,1102.00,,,,,1137,,,,,1218,,,,,1291
+utility_solar_outofbasin,,,,,rsCrsQrsHall,,MW,450.00,450.00,450.00,450.00,450.00,450.00,450.00,450.00,450.00,450.00,450.00,450,450,450,450,450,450,450,450,450,450,450,450,450,450,450

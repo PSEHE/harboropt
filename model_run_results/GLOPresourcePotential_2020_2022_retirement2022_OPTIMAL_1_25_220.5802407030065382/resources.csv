@@ -1,0 +1,113 @@
+resource,legacy,existing_mw,dispatchable,co2_short_tons_per_mwh,nox_lbs_per_mwh,so2_lbs_per_mwh,pm25_lbs_per_mwh
+gas_harbor,y,452.0,y,0.64,0.4,0.01,0.03
+gas_ct,n,0.0,y,0.56,1.43,0.09,0.03
+ci_shed_nonwatersystem,n,0.0,y,0.0,0.0,0.0,0.0
+utility_solar_inbasin_rsCrsQ,n,0.0,n,0.0,0.0,0.0,0.0
+utility_solar_outofbasin,n,0.0,n,0.0,0.0,0.0,0.0
+solar_rooftop_ci,n,0.0,n,0.0,0.0,0.0,0.0
+solar_rooftop_residentialSF,n,0.0,n,0.0,0.0,0.0,0.0
+solar_rooftop_residentialMF,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.College.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Food.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Health Care.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.Cooking,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Hotel.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.Cooking,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Miscellaneous.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Office.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Refrigerated Warehouse.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Restaurant.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Retail.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.Cooking,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.School.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.Cooking,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.Cooling,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.IndoorLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.OfficeEquipment,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.OutdoorLighting,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.Refrigeration,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.Ventilation,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Commercial.Warehouse.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.CoolingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.Dryer,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.Refrigerator,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.ResLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.MULTIFAMILY.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.CoolingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.Dryer,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.Heating,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.Refrigerator,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.ResLightingEff,n,0.0,n,0.0,0.0,0.0,0.0
+FCZ7.Residential.SINGLEFAMILY.WaterHeating,n,0.0,n,0.0,0.0,0.0,0.0

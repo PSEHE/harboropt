@@ -1,0 +1,16 @@
+﻿resource,potential_type,la100_scenario,load_projection,coincident_type,region,cumulative?,units,2020,2025,2030,2035,2040,2045
+res_shift_space_cooling,deployment,na,moderate,end_use,ladwp,cumulative,MW,75,225,362,467,480,477
+ci_shift_space_cooling,deployment,na,moderate,end_use,ladwp,cumulative,MW,0,48,83,122,130,138
+ci_shed_nonwatersystem,deployment,na,moderate,end_use,ladwp,cumulative,MW,33,102,170,178,180,190
+ci_shed_nonwatersystem,deployment,na,moderate,system,ladwp,cumulative,MW,32,95,155,162,163,172
+res_shift_space_cooling,deployment,na,moderate,na,ladwp,cumulative,GWh,0,10,49,80,102,121
+ci_shift_space_cooling,deployment,na,moderate,na,ladwp,cumulative,GWh,0,53,91,135,146,156
+solar_nonrooftop_utility_inbasin,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,,,,,,13.08
+solar_rooftop_ci,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,18.22,19.03,21.28,27.21,33.54,35.03
+solar_rooftop_residentialSF,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,4.81,9.37,27.47,43.19,56.01,61.06
+solar_rooftop_residentialMF,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,0.27,3.11,13.25,22.83,32.92,39.07
+storage_utility_4hr_rsCrsQrsHall,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,,,,,,9.29
+storage_residentialSF_4hr_rsCrsQrsHall,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,0.16,1.35,8.63,17.22,26.04,30.25
+storage_residentialMF_4hr_rsCrsQrsHall,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,0,0.74,4.83,10.07,17.02,22.17
+storage_ci_4hr_rsCrsQrsHall,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,1.3,1.39,1.77,3.24,5.23,5.8
+diesel_genset_replacement_storage_4hr,,,,,,,,,,,,,
