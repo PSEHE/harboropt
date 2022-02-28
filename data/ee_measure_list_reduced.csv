@@ -1,0 +1,37 @@
+﻿Resource,Measure Names,Measure Values
+FCZ7.Commercial.Restaurant.Refrigeration,"resource potential (MW, 2030)",0.398140653
+FCZ7.Residential.MULTIFAMILY.Refrigerator,"resource potential (MW, 2030)",0.459023561
+FCZ7.Commercial.Warehouse.Cooling,"resource potential (MW, 2030)",0.493000158
+FCZ7.Residential.SINGLEFAMILY.Refrigerator,"resource potential (MW, 2030)",0.609110894
+FCZ7.Commercial.Office.Ventilation,"resource potential (MW, 2030)",0.830374281
+FCZ7.Commercial.Hotel.Cooling,"resource potential (MW, 2030)",0.851587212
+FCZ7.Commercial.Food.Refrigeration,"resource potential (MW, 2030)",0.921058074
+FCZ7.Commercial.School.Cooling,"resource potential (MW, 2030)",0.971879522
+FCZ7.Commercial.College.Cooling,"resource potential (MW, 2030)",1.948914087
+FCZ7.Residential.MULTIFAMILY.ResLightingEff,"resource potential (MW, 2030)",2.132911357
+FCZ7.Commercial.Retail.Cooling,"resource potential (MW, 2030)",2.456836585
+FCZ7.Commercial.Restaurant.Cooling,"resource potential (MW, 2030)",2.465225069
+FCZ7.Residential.MULTIFAMILY.CoolingEff,"resource potential (MW, 2030)",3.149183507
+FCZ7.Residential.SINGLEFAMILY.ResLightingEff,"resource potential (MW, 2030)",3.533101043
+FCZ7.Commercial.Miscellaneous.Cooling,"resource potential (MW, 2030)",3.694840123
+FCZ7.Commercial.Health Care.Cooling,"resource potential (MW, 2030)",4.251504947
+FCZ7.Commercial.Office.Cooling,"resource potential (MW, 2030)",10.10864681
+FCZ7.Residential.SINGLEFAMILY.CoolingEff,"resource potential (MW, 2030)",10.9342328
+FCZ7.Commercial.Restaurant.Refrigeration,Annual Savings 2030,2535.526814
+FCZ7.Residential.MULTIFAMILY.Refrigerator,Annual Savings 2030,2657.874726
+FCZ7.Commercial.Warehouse.Cooling,Annual Savings 2030,353.8323781
+FCZ7.Residential.SINGLEFAMILY.Refrigerator,Annual Savings 2030,3526.922338
+FCZ7.Commercial.Office.Ventilation,Annual Savings 2030,2488.945759
+FCZ7.Commercial.Hotel.Cooling,Annual Savings 2030,2090.702243
+FCZ7.Commercial.Food.Refrigeration,Annual Savings 2030,6781.989084
+FCZ7.Commercial.School.Cooling,Annual Savings 2030,1261.838515
+FCZ7.Commercial.College.Cooling,Annual Savings 2030,3868.405221
+FCZ7.Residential.MULTIFAMILY.ResLightingEff,Annual Savings 2030,3193.076164
+FCZ7.Commercial.Retail.Cooling,Annual Savings 2030,3630.626957
+FCZ7.Commercial.Restaurant.Cooling,Annual Savings 2030,1961.865391
+FCZ7.Residential.MULTIFAMILY.CoolingEff,Annual Savings 2030,1607.564553
+FCZ7.Residential.SINGLEFAMILY.ResLightingEff,Annual Savings 2030,5289.230931
+FCZ7.Commercial.Miscellaneous.Cooling,Annual Savings 2030,6157.987571
+FCZ7.Commercial.Health Care.Cooling,Annual Savings 2030,9105.739243
+FCZ7.Commercial.Office.Cooling,Annual Savings 2030,17715.89251
+FCZ7.Residential.SINGLEFAMILY.CoolingEff,Annual Savings 2030,5378.740459

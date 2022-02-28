@@ -10,33 +10,34 @@ import utils
 
 ##### TO-DO: 
 
-##### Check storage charging and discharging in the same hour.
-##### Should valuation of excess energy be grid average emissions vs. marginal? Could be different values for different steps of the function.
-##### Limit max export capacity if value of excess energy extends beyond Harbor region.
-##### Change marginal generation cost to hourly LMP data from CAISO.
-##### For EE and solar and DR resources: Incorporate avoided transmission and distribution costs for energy generated to meet Harbor.
+##### Storage and solar bill savings — run reopt for import/export ratio for res and comm.
+##### Constrain DR to only be allowed in 4 months out of the year (June 15 to October 15)?
+##### Check why storage charges and discharges in the same hour?
+##### Resource costs are currently valued out to the end of portfolio timespan, even if they would continue to operate after the portfolio timespan is over (ex. if they are built in 2029). How to value resources fairly after 2050?
+##### Storage cost of charging — wholesale price of electricity: should this be the LMP at the Harbor node? (right now it's a constant).
+##### Change Harbor and new gas resource monetized emissions to WattTime values to align w/ marginal health damages data.
+##### For EE and solar and DR resources: Incorporate avoided transmission and distribution costs for energy generated to meet Harbor. 
 ##### EE costs are nominal. Need to convert to 2018$.
 ##### Incorporate paired resilient solar+storage systems based on REopt apartment building discussion. Incorporate resilient hubs.
 ##### Diesel genset emissions: change code to read in diesel genset parameters rather than set as inputs. See notes from conversation with Patrick. Use updated dataset from Lisa Ramos. Need yearly fuel costs. Run REOpt using reference building to figure out paired solar + storage for replacing diesel gensets.
 
 
 #Nice-to-have:
+##### Build in additional step to excess energy valuation: Should valuation of excess energy change from marginal emissions to grid average emissions if used beyond local Harbor region? What LMP value should be used for the wider LADWP region? Need to limit max export capacity if value of excess energy extends beyond Harbor region.
+##### Customer savings from NEM rooftop solar?
 ##### Include res & comm shift cooling demand response.
-##### Make sure that the same pollutants are evaluated across resources. 
 ##### Confirm that transmission cost should be scaled with capacity of outofbasin resources. 
-##### Resources are currently valued for the generation they provide over a 30-year timespan. Value the residual energy they generate after this window? Ex. if something is built in build-year 10, value the residual energy generated it generates for the 10 years after the portfolio timespan is complete?
-##### For wholesale cost of electricity for storage charging: use hourly changing value?
+
 
 
         
 class LinearProgram(object):
     
-    def __init__(self, solver_type = 'GLOP', demand_profile = pd.DataFrame(), max_excess_energy = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), profiles = pd.DataFrame(), ee_resource_potential = pd.DataFrame(), resources = pd.DataFrame(), storage = pd.DataFrame(), resource_potential = pd.DataFrame(), health_cost_emissions_la = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = False, wholesale_cost_electricity_mwh = 39.39, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility_side', transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46.3, avoided_marginal_generation_cost_per_mwh = 36.60, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#demand_hour_start = 0, demand_length_hours = 8762,gas_fuel_cost=4):
+    def __init__(self, solver_type = 'GLOP', demand_profile = pd.DataFrame(), max_excess_energy = pd.DataFrame(), caiso_lmp = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), profiles = pd.DataFrame(), ee_resource_potential = pd.DataFrame(), resources = pd.DataFrame(), storage = pd.DataFrame(), resource_potential = pd.DataFrame(), health_cost_emissions_la = pd.DataFrame(), res_hourly_tou_retail_rate = pd.DataFrame(), comm_hourly_tou_retail_rate = pd.DataFrame(), comm_annual_demand_charge_savings = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = True, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility', bill_savings = False, transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#wholesale_cost_electricity_mwh = 39.39, demand_hour_start = 0, demand_length_hours = 8762,gas_fuel_cost=4), avoided_marginal_generation_cost_per_mwh = 36.60, residentialSF_standard_retail_rate_kwh = 0.18, residentialMF_standard_retail_rate_kwh = 0.06:
         
         #Test out each constraint.
         self.fulfill_demand_constraint = True
         self.max_charge_constraint = True
-        
         self.residential_storage_potential_limit_SF_constraint=True
         self.residential_storage_potential_limit_MF_constraint=True
         self.commercial_storage_potential_limit_constraint=True
@@ -49,10 +50,14 @@ class LinearProgram(object):
         
         self.demand_profile = demand_profile
         self.max_excess_energy = max_excess_energy
+        self.caiso_lmp = caiso_lmp
         self.profiles = profiles
         self.ee_resource_potential = ee_resource_potential
         self.resource_potential = resource_potential
         self.resources = resources
+        self.res_hourly_tou_retail_rate = res_hourly_tou_retail_rate
+        self.comm_hourly_tou_rate = comm_hourly_tou_retail_rate
+        self.comm_annual_demand_charge_savings = comm_annual_demand_charge_savings
         self.selected_resource = selected_resource
         if self.selected_resource != 'all':
             self.resources = self.resources[self.resources['resource']==self.selected_resource]
@@ -60,9 +65,8 @@ class LinearProgram(object):
         self.selected_resource = selected_resource
         self.initial_state_of_charge = initial_state_of_charge
         self.storage_can_charge_from_grid = storage_can_charge_from_grid
+        self.bill_savings = bill_savings
         
-        #Does this need to vary by hour of the year?
-        self.wholesale_cost_electricity_mwh = wholesale_cost_electricity_mwh
         
         self.portfolio_timespan = portfolio_timespan
         self.storage_lifespan = storage_lifespan
@@ -83,11 +87,6 @@ class LinearProgram(object):
         self.cost_projections = cost_projections
         
         self.social_cost_carbon_short_ton = social_cost_carbon_short_ton
-        
-        self.avoided_marginal_generation_cost_per_mwh = avoided_marginal_generation_cost_per_mwh
-#         self.avoided_marginal_transmission_cost_per_mwh = avoided_marginal_transmission_cost_per_mwh
-#         self.avoided_marginal_distribution_cost_per_mwh = avoided_marginal_distribution_cost_per_mwh
-        
         
 #Yearly emissions per diesel genset mw-equivalent.
         self.diesel_genset_carbon_per_mw = diesel_genset_carbon_per_mw
@@ -149,8 +148,6 @@ class LinearProgram(object):
         self.ladwp_marginal_healthdamages = marginal_healthdamages
         #self.ladwp_marginal_healthdamages = self._setup_ladwp_marginal_healthdamages()
         self.health_cost_emissions_la = health_cost_emissions_la
-        
-#         self.wholegrid_emissions = self._setup_wholegrid_emissions()
         
         #Set up health cost of pollutants emitted in LA. ** Replace with $/lb values for each pollutant from WattTime. See email from Henry.
         discount_rate_inds = self.health_cost_emissions_la['discount_rate'] == self.discount_rate
@@ -224,71 +221,100 @@ class LinearProgram(object):
             
             #Outside of hourly loop, add capex costs and extrapolated fixed costs to obj function for each nondisp resource. 
             for resource in self.nondisp.index: 
-                self.lcoe_dict[year][resource]={}
-                
-                capacity = self.capacity_vars[resource][year]
-                
-                resource_inds = self.resource_costs['resource']==resource
-                
-                capex_cost_inds = self.resource_costs['cost_type']=='capex_per_kw'
-                fixed_cost_inds = self.resource_costs['cost_type']=='fixed_per_kw_year'
-                              
-                #Extrapolate fixed costs to the end of portfolio timespan and then discount extrapolated costs back to build_start_year.
-                discount_factor = pow(self.growth_rate, -(year))
-                fixed_mw_extrapolated = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000 * self.extrapolate_then_discount[year] * discount_factor
-                
-                if resource == 'utility_solar_outofbasin':
+                if resource in self.capacity_vars.keys():
+                    self.lcoe_dict[year][resource]={}
+
+                    capacity = self.capacity_vars[resource][year]
+
+                    resource_inds = self.resource_costs['resource']==resource
+
+                    capex_cost_inds = self.resource_costs['cost_type']=='capex_per_kw'
+                    fixed_cost_inds = self.resource_costs['cost_type']=='fixed_per_kw_year'
+
+                    #Extrapolate fixed costs to the end of portfolio timespan and then discount extrapolated costs back to build_start_year.
                     discount_factor = pow(self.growth_rate, -(year))
-                    transmission_annual_extrapolated = self.transmission_annual_cost_per_mw * self.extrapolate_then_discount[year] * discount_factor
-                    fixed_mw_extrapolated = fixed_mw_extrapolated + transmission_annual_extrapolated
+                    fixed_mw= self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000 
                     
-                capex_mw = self.resource_costs.loc[capex_cost_inds & resource_inds, str(cost_year)].item()*1000 * discount_factor
-
-                weighted_avg_eul_inds = self.resource_costs['cost_type']=='weighted_avg_eul'
-                resource_weighted_avg_eul_inds = self.resource_costs.loc[weighted_avg_eul_inds & resource_inds]
-                
-                #If nondisp resource is one with an effective useful life in the resource_projected_costs df, incorporate replacement costs.
-                if not resource_weighted_avg_eul_inds.empty:
-                    
-                    weighted_avg_eul = round(self.resource_costs.loc[weighted_avg_eul_inds & resource_inds, str(cost_year)].item())
-                    number_of_replacements = int((self.portfolio_timespan -1 -year)/ weighted_avg_eul)
-
-                    ## Calculate replacement capex costs in future years, apply discount rate, and add to original capex cost.
-                    for i in range(number_of_replacements):
-
-                        replacement_year = int(((i+1) * weighted_avg_eul) + cost_year)
+                    #If bill_savings is set to True, incorporate demand charge savings into fixed costs for commercial EE cooling and refrigeration measures (ventilation does not achieve demand charge savings according to Patrick). If additional EE measures are included in the model run, need to incorporate demand charge savings ratios for them.
+                    if self.bill_savings == True:
                         
-                        if replacement_year > 2050:
-                            replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(2050)].item()*1000
-                        else:
-                            replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(replacement_year)].item()*1000
-
-                        #Calculate discounting factor to apply to capex in the given replacement year.
-                        discount_factor = pow(self.growth_rate, -(replacement_year-self.build_start_year))
-                        replacement_capex_discounted =  replacement_capex * discount_factor
-
-                        capex_mw = capex_mw + replacement_capex_discounted
+                        comm_cooling_strings = ['FCZ7','Commercial','Cooling']
+                        comm_refrig_strings = ['FCZ7','Commercial','Refrigeration']
+                        mf_lighting_strings = ['FCZ7','MULTIFAMILY','ResLightingEff']
+                        
+                        comm_storage_strings = ['storage_ci']
+                        
+                        #Get yearly demand charge savings (summing savings from yearly and monthly peak reductions) for cooling, refrigeration, and lighting EE measures. Subtract this value from fixed costs ($/MW) before extrapolating costs. **Technically savings do not accrue in the first year that EE measure is built for demand charge savings based on yearly peak (only monthly peak) —— need to change code to account for this.
+                        
+                        if all(x in resource for x in comm_cooling_strings):
+                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac')].sum()['demand_charge_savings_per_mw']
+                            print(demand_charge_savings_mw_year)
+                            fixed_mw = fixed_mw - demand_charge_savings_mw_year
+                            
+                        if all(x in resource for x in comm_refrig_strings):
+                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration')].sum()['demand_charge_savings_per_mw']
+                            print(demand_charge_savings_mw_year)
+                            fixed_mw = fixed_mw - demand_charge_savings_mw_year
+                            
+                        if all(x in resource for x in mf_lighting_strings):
+                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('lighting')].sum()['demand_charge_savings_per_mw']
+                            print(demand_charge_savings_mw_year)
+                            fixed_mw = fixed_mw - demand_charge_savings_mw_year
+                                                   
+                    #Extrapolate fixed costs out to end of portfolio timespan and discount back to build_start_year.
+                    fixed_mw_extrapolated = fixed_mw * self.extrapolate_then_discount[year] * discount_factor
                     
-               
-                #Add capex cost for given build year to lcoe dictionary.
-                self.lcoe_dict[year][resource]['capex']=capex_mw
-                
-                #Add fixed costs extrapolated over portfolio timespan to lcoe dictionary.
-                self.lcoe_dict[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
-                
-                capex_fixed = capex_mw + fixed_mw_extrapolated
-                
-                if resource == 'utility_solar_outofbasin':
-                    #*** Need to apply inflation rate to this transmission cost.
-                    discount_factor = pow(self.growth_rate, -(year))
-                    transmission_cost = self.transmission_capex_cost_per_mw * discount_factor
-                    capex_fixed = capex_fixed + transmission_cost 
+                    if resource == 'utility_solar_outofbasin':
+                        discount_factor = pow(self.growth_rate, -(year))
+                        transmission_annual_extrapolated = self.transmission_annual_cost_per_mw * self.extrapolate_then_discount[year] * discount_factor
+                        fixed_mw_extrapolated = fixed_mw_extrapolated + transmission_annual_extrapolated
 
-                #Add total cost coefficient to nondisp capacity variable in objective function.
-                objective.SetCoefficient(capacity, capex_fixed)
-                
-      
-                
+                    capex_mw = self.resource_costs.loc[capex_cost_inds & resource_inds, str(cost_year)].item()*1000 * discount_factor
+
+                    weighted_avg_eul_inds = self.resource_costs['cost_type']=='weighted_avg_eul'
+                    resource_weighted_avg_eul_inds = self.resource_costs.loc[weighted_avg_eul_inds & resource_inds]
+
+                    #If nondisp resource is one with an effective useful life in the resource_projected_costs df, incorporate replacement costs.
+                    if not resource_weighted_avg_eul_inds.empty:
+
+                        weighted_avg_eul = round(self.resource_costs.loc[weighted_avg_eul_inds & resource_inds, str(cost_year)].item())
+                        number_of_replacements = int((self.portfolio_timespan -1 -year)/ weighted_avg_eul)
+
+                        ## Calculate replacement capex costs in future years, apply discount rate, and add to original capex cost.
+                        for i in range(number_of_replacements):
+
+                            replacement_year = int(((i+1) * weighted_avg_eul) + cost_year)
+
+                            if replacement_year > 2050:
+                                replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(2050)].item()*1000
+                            else:
+                                replacement_capex = self.resource_costs.loc[capex_cost_inds & resource_inds, str(replacement_year)].item()*1000
+
+                            #Calculate discounting factor to apply to capex in the given replacement year.
+                            discount_factor = pow(self.growth_rate, -(replacement_year-self.build_start_year))
+                            replacement_capex_discounted =  replacement_capex * discount_factor
+
+                            capex_mw = capex_mw + replacement_capex_discounted
+
+
+                    #Add capex cost for given build year to lcoe dictionary.
+                    self.lcoe_dict[year][resource]['capex']=capex_mw
+
+                    #Add fixed costs extrapolated over portfolio timespan to lcoe dictionary.
+                    self.lcoe_dict[year][resource]['fixed_extrapolated']=fixed_mw_extrapolated
+
+                    capex_fixed = capex_mw + fixed_mw_extrapolated
+
+                    if resource == 'utility_solar_outofbasin':
+                        #*** Need to apply inflation rate to this transmission cost.
+                        discount_factor = pow(self.growth_rate, -(year))
+                        transmission_cost = self.transmission_capex_cost_per_mw * discount_factor
+                        capex_fixed = capex_fixed + transmission_cost 
+
+                    #Add total cost coefficient to nondisp capacity variable in objective function.
+                    objective.SetCoefficient(capacity, capex_fixed)
+
+
             #Within build year loop but outside of hourly loop, add capex and fixed costs to objective function for every dispatchable resource.         
             for resource in self.disp.index:
                 
@@ -347,12 +373,26 @@ class LinearProgram(object):
                     if capex_per_mw < 0:
                          capex_per_mw = 0
                     
+                    fixed_mw = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000
                     #Extrapolate fixed costs to the end of portfolio timespan and then discount extrapolated costs back to build_start_year.
-                    fixed_mw_extrapolated = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000 * self.extrapolate_then_discount[year] * discount_factor
+                    fixed_mw_extrapolated = fixed_mw * self.extrapolate_then_discount[year] * discount_factor
                     
                 else:
                     capex_per_mw = self.resource_costs.loc[capex_cost_inds & resource_inds, str(cost_year)].item()*1000 * discount_factor
-                    fixed_mw_extrapolated = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000 * self.extrapolate_then_discount[year] * discount_factor
+                    fixed_mw = self.resource_costs.loc[fixed_cost_inds & resource_inds, str(cost_year)].item()*1000
+                    
+                    #If bill_savings is set to True, incorporate demand charge savings into fixed costs for commercial storage.
+                    if self.bill_savings == True:
+                        
+                        comm_storage_strings = ['storage_ci']
+                        
+                        #Get yearly demand charge savings (summing savings from yearly and monthly peak reductions) for commercial storage. Subtract this value from fixed costs ($/MW) before extrapolating costs. **Technically savings do not accrue in the first year that EE measure is built for demand charge savings based on yearly peak (only monthly peak) —— need to change code to account for this.
+                        if all(x in resource for x in comm_storage_strings):
+                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('storag')].sum()['demand_charge_savings_per_mw']
+                            print(resource, 'demand_charge_savings_per_mw' = demand_charge_savings_mw_year)
+                            fixed_mw = fixed_mw - demand_charge_savings_mw_year
+                    
+                    fixed_mw_extrapolated = fixed_mw * self.extrapolate_then_discount[year] * discount_factor
                     
 
                 ## Subtract avoided emissions from cost of resilient storage replacing diesel gensets.
@@ -417,8 +457,9 @@ class LinearProgram(object):
                 #Get grid hourly marginal health damages and CO2 costs.
                 grid_monetized_emissions_per_mwh = self.ladwp_marginal_healthdamages.loc[ind, 'healthdamage_moer'] + self.ladwp_marginal_co2.loc[ind,'moer (lbs CO2/MWh)']/2000*self.social_cost_carbon_short_ton
 
-                #Calculate value of additional energy generated in this hour of the year. This includes avoided generation costs and avoided grid emissions. 
-                value_additional_energy_mwh = self.avoided_marginal_generation_cost_per_mwh + grid_monetized_emissions_per_mwh
+                #Calculate value of additional energy generated in this hour of the year. This includes avoided LMP (locational marginal price) and avoided marginal grid emissions. 
+                lmp = self.caiso_lmp.loc[ind,'LMP_$/MWh']
+                value_additional_energy_mwh = lmp + grid_monetized_emissions_per_mwh
                 
                 #Get max excess energy value and demand value in this hour.
                 max_excess_energy_mwh = self.max_excess_energy.loc[ind,'max_excess_energy (mwh)']
@@ -456,60 +497,82 @@ class LinearProgram(object):
                 
                 #Within hourly for loop, loop through nondispatchable resources.   
                 for resource in self.nondisp.index:
-                    
-                    #Nondispatchable resources can only generate their hourly profile scaled by nameplate capacity to help fulfill demand. 
-                    profile_max = max(self.profiles[resource])
-                    scaling_coefficient = self.profiles.loc[ind, resource] / profile_max
-                    
-                    nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
-
-                    for i, var in enumerate(nondisp_capacity_cumulative):
-                        if self.fulfill_demand_constraint == True:
-                            fulfill_demand.SetCoefficient(var, scaling_coefficient)
-                            
-                            value_excess_energy_constraint.SetCoefficient(var, scaling_coefficient)
-                            
+                    if resource in self.capacity_vars.keys():
                         
-                        if self.storage_can_charge_from_grid == False:
-                            if 'solar' in resource:
-                                if self.storage_charge_constraint == True:
-                                    storage_charge.SetCoefficient(var, scaling_coefficient)
+                        #Nondispatchable resources can only generate their hourly profile scaled by nameplate capacity to help fulfill demand. 
+                        profile_max = max(self.profiles[resource])
+                        scaling_coefficient = self.profiles.loc[ind, resource] / profile_max
+
+                        nondisp_capacity_cumulative = self.capacity_vars[resource][0:year+1]
+
+                        for i, var in enumerate(nondisp_capacity_cumulative):
+                            if self.fulfill_demand_constraint == True:
+                                fulfill_demand.SetCoefficient(var, scaling_coefficient)
+
+                                value_excess_energy_constraint.SetCoefficient(var, scaling_coefficient)
+
+
+                            if self.storage_can_charge_from_grid == False:
+                                if 'solar' in resource:
+                                    if self.storage_charge_constraint == True:
+                                        storage_charge.SetCoefficient(var, scaling_coefficient)
+
+                        #Get the coefficient of capacity variable and change coefficient to incorporate variable costs.
+                        #If EE costs are set to "total_cost," subtract residential bill savings from variable costs.
+                        capacity_variable_current_build_year = self.capacity_vars[resource][-1]
+
+                        existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
+
+                        #Calculate variable cost including monetized emissions from that resource.
+                        resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
+
+                        #Error check— nondispatchable resources should have 0 emissions in our model.
+                        if resource_monetized_emissions_mwh > 0:
+                            print('ERROR: ',resource, ' monetized emissions (per mwh) =', resource_monetized_emissions_mwh)
+
+                        variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
+                        resource_inds = self.resource_costs['resource']==resource
+                        variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item()
+                        
+        
+                        #Incorporate energy bill savings if self.bill_savings is set to True.
+                        if self.bill_savings == True:
+                            #End-user bill savings are retail rate minus wholesale price of electricity (LMP). To avoid double-counting savings across bill savings and value of excess energy.
+                            small_commercial_buildings = ['FCZ7.Commercial.Restaurant.Cooling',
+                                                          'FCZ7.Commercial.Restaurant.Refrigeration',
+                                                          'FCZ7.Commercial.Miscellaneous.Cooling',
+                                                          'FCZ7.Commercial.Retail.Cooling']
+
+                            if 'MULTIFAMILY' in resource:
+                                bill_savings = self.comm_hourly_tou_rate.loc[ind, 'rate_small_comm'].item()
+                                variable_cost = variable_cost - bill_savings - lmp
+                            elif 'SINGLEFAMILY' in resource:
+                                bill_savings = self.res_hourly_tou_retail_rate.loc[ind, 'rate']
+                                variable_cost = variable_cost - bill_savings - lmp
+                            elif 'FCZ7.Commercial' in resource:
+                                if resource in small_commercial_buildings:
+                                    bill_savings = self.comm_hourly_tou_rate.loc[ind, 'rate_small_comm']
+                                else:
+                                    bill_savings = self.comm_hourly_tou_rate.loc[ind, 'rate_large_comm']
+                                variable_cost = variable_cost - bill_savings - lmp
                                 
-                    #Get the coefficient of capacity variable and change coefficient to incorporate variable costs.
-                    #All of the block of code below could be removed since variable costs are 0 for our model, but code currently allows for applicability to other model inputs where nondisp resources might have variable costs.
-                    capacity_variable_current_build_year = self.capacity_vars[resource][-1]
-                    
-                    existing_coeff = objective.GetCoefficient(var=capacity_variable_current_build_year)
+                                
+                        variable_cost_monetized_emissions = variable_cost + resource_monetized_emissions_mwh
 
-                    #Calculate variable cost including monetized emissions from that resource.
-                    resource_monetized_emissions_mwh = (self.nondisp.loc[resource, 'co2_short_tons_per_mwh']*self.social_cost_carbon_short_ton) + self.nondisp.loc[resource, 'nox_lbs_per_mwh']/2000*self.nox_cost_short_ton_la + self.nondisp.loc[resource, 'so2_lbs_per_mwh']/2000*self.so2_cost_short_ton_la + self.nondisp.loc[resource, 'pm25_lbs_per_mwh']/2000*self.pm25_cost_short_ton_la
-                    
-                    #Error check— nondispatchable resources should have 0 emissions in our model.
-                    if resource_monetized_emissions_mwh > 0:
-                        print('ERROR: ',resource, ' monetized emissions (per mwh) =', resource_monetized_emissions_mwh)
-                    
-                    variable_cost_inds = self.resource_costs['cost_type']=='variable_per_mwh'
-                    resource_inds = self.resource_costs['resource']==resource
-                    variable_cost = self.resource_costs.loc[variable_cost_inds & resource_inds, str(cost_year)].item()
+                        #Incorporate value of additional energy generated into coefficient.
+                        variable_cost_monetized_emissions_coeff = variable_cost_monetized_emissions * scaling_coefficient
 
-                    variable_cost_monetized_emissions = variable_cost + resource_monetized_emissions_mwh
-                    
-                    #Incorporate value of additional energy generated into coefficient.
-                    variable_cost_monetized_emissions_coeff = variable_cost_monetized_emissions * scaling_coefficient
-                                         
-                    #If not in the last build_year, don't extrapolate variable costs. Just discount back to build_start_year. If in the last build year, extrapolate variable costs to the end of portfolio timespan and then discount total extrapolated costs back to build_start_year.
-                    discount_factor = pow(self.growth_rate, -(year))
-                    if year < (self.build_years-1):
-                        coefficient_adjustment = variable_cost_monetized_emissions_coeff * discount_factor
-                    else:
-                        coefficient_adjustment = variable_cost_monetized_emissions_coeff * self.extrapolate_then_discount[year] * discount_factor
+                        #If not in the last build_year, don't extrapolate variable costs. Just discount back to build_start_year. If in the last build year, extrapolate variable costs to the end of portfolio timespan and then discount total extrapolated costs back to build_start_year.
+                        discount_factor = pow(self.growth_rate, -(year))
+                        if year < (self.build_years-1):
+                            coefficient_adjustment = variable_cost_monetized_emissions_coeff * discount_factor
+                        else:
+                            coefficient_adjustment = variable_cost_monetized_emissions_coeff * self.extrapolate_then_discount[year] * discount_factor
 
-                    #Adjust coefficient on capacity variable to include variable costs.
-                    new_coefficient = existing_coeff + coefficient_adjustment
-                    objective.SetCoefficient(capacity_variable_current_build_year, new_coefficient)
+                        #Adjust coefficient on capacity variable to include variable costs.
+                        new_coefficient = existing_coeff + coefficient_adjustment
+                        objective.SetCoefficient(capacity_variable_current_build_year, new_coefficient)
                     
-
-                
                 #Create hourly charge and discharge variables for each storage resource and store in respective dictionaries. 
                 for resource in self.storage.index:
 
@@ -527,13 +590,13 @@ class LinearProgram(object):
                         if self.storage_charge_constraint ==True:
                             storage_charge.SetCoefficient(charge, -1)
 
-                    
                     #Add variable cost of charging to objective function. If storage charges from grid, add monetized grid emissions to variable cost. #Note: variable cost should include the wholesale cost of electricity for charging storage.
                     cost_type_inds = self.resource_costs['cost_type']=='variable_per_mwh'
                     resource_inds = self.resource_costs['resource']==resource
                     
                     if self.storage_can_charge_from_grid:
-                        variable_cost = self.resource_costs.loc[cost_type_inds & resource_inds, str(cost_year)].item() + grid_monetized_emissions_per_mwh + self.wholesale_cost_electricity_mwh
+                        if 'utility' in resource:
+                        variable_cost = self.resource_costs.loc[cost_type_inds & resource_inds, str(cost_year)].item() + grid_monetized_emissions_per_mwh + lmp
                     else:
                         variable_cost = self.resource_costs.loc[cost_type_inds & resource_inds, str(cost_year)].item()
 
@@ -796,9 +859,9 @@ class LinearProgram(object):
 #         return resources
     
     def _setup_resource_costs(self):
-        if self.ee_cost_type == 'utility_side':
+        if self.ee_cost_type == 'utility':
             resource_costs = pd.read_csv('data/resource_projected_costs_ee_utilitycosts.csv')
-        elif self.ee_cost_type == 'total_cost':
+        elif self.ee_cost_type == 'total':
             resource_costs = pd.read_csv('data/resource_projected_costs_ee_totalcosts.csv')
 
         resource_costs = resource_costs[resource_costs['cost_decline_assumption']==self.cost_projections]
@@ -829,29 +892,24 @@ class LinearProgram(object):
                 if 'FCZ7' in resource:
                     resource_inds = self.ee_resource_potential['resource']==resource
                     if resource_inds.sum()>0:
-                        for year in range(build_years):
-                            
-                            calendar_year = self.build_start_year + year
-                            ee_max_mw = self.ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
-                
-                            capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
-                            #capacity = self.solver.NumVar(0, ee_max_mw, str(resource)+ '_' + str(year))
-                            capacity_by_build_year.append(capacity)
-                            
-                            #Capacity built up through this year must be less than or equal to the ee_max_mw limit in this year.
-                            ee_capacity_constraint = self.solver.Constraint(0, ee_max_mw)
-                            for i, var in enumerate(capacity_by_build_year):
-                                ee_capacity_constraint.SetCoefficient(var, 1)
-                            
-                            
-                        capacity_by_resource[resource] = capacity_by_build_year
-                    else:
-                        for year in range(build_years):
-                            #For EE measures that aren't in CEC forecast of annual savings, set capacity to 0.
-                            #capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
-                            capacity = self.solver.NumVar(0, 0, str(resource)+ '_' + str(year))
-                            capacity_by_build_year.append(capacity)
-                        capacity_by_resource[resource] = capacity_by_build_year
+                        ee_resource = self.ee_resource_potential[resource_inds]
+                        if ee_resource.iloc[:,1:13].sum(axis=1).item() > 0:
+                        
+                            for year in range(build_years):
+
+                                calendar_year = self.build_start_year + year
+                                ee_max_mw = self.ee_resource_potential.loc[resource_inds, str(calendar_year)].item()
+
+                                capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
+                                capacity_by_build_year.append(capacity)
+
+                                #Capacity built up through this year must be less than or equal to the ee_max_mw limit in this year.
+                                ee_capacity_constraint = self.solver.Constraint(0, ee_max_mw)
+                                for i, var in enumerate(capacity_by_build_year):
+                                    ee_capacity_constraint.SetCoefficient(var, 1)
+
+                            capacity_by_resource[resource] = capacity_by_build_year
+                        
                 else:
                     resource_inds = self.resource_potential['resource']==resource
                     for year in range(build_years):
@@ -1022,7 +1080,7 @@ class LinearProgram(object):
             'storage_resilience_incentive_per_kwh', 
             'resilient_storage_grid_fraction', 
             'social_cost_carbon_short_ton', 
-            'avoided_marginal_generation_cost_per_mwh', 
+            #'avoided_marginal_generation_cost_per_mwh', 
             'diesel_genset_carbon_per_mw',
             'diesel_genset_pm25_per_mw', 
             'diesel_genset_nox_per_mw', 
@@ -1042,6 +1100,7 @@ class LinearProgram(object):
             'ee_resource_potential',
             'resource_potential',
             'max_excess_energy',
+            'caiso_lmp',
             'resources',
             'storage',
             'health_cost_emissions_la',
@@ -1124,17 +1183,18 @@ class LinearProgram(object):
                     resource_gen_dict[resource]=gen_list
 
             for resource in self.nondisp.index:
-                profile_max = max(self.profiles[resource])
-                profile = self.profiles[resource] / profile_max
+                if resource in self.capacity_vars.keys():
+                    profile_max = max(self.profiles[resource])
+                    profile = self.profiles[resource] / profile_max
 
-                capacity_cumulative = self.capacity_vars[resource][0:year+1]
-                capacity_total = 0
-                for i, var in enumerate(capacity_cumulative):
-                    capacity_total += var.solution_value()
+                    capacity_cumulative = self.capacity_vars[resource][0:year+1]
+                    capacity_total = 0
+                    for i, var in enumerate(capacity_cumulative):
+                        capacity_total += var.solution_value()
 
-                gen_list = profile * capacity_total
-                if any(gen_list):
-                    resource_gen_dict[resource]=gen_list
+                    gen_list = profile * capacity_total
+                    if any(gen_list):
+                        resource_gen_dict[resource]=gen_list
 
             for resource in self.storage.index:
                 storage_hourly_charge = []
@@ -1297,6 +1357,7 @@ class LinearProgram(object):
                     
                     variable_cost_extrapolated = self.lcoe_dict[build_year][resource]['variable_extrapolated']
                     mwh_per_mw = self.lcoe_dict[build_year][resource]['annual_generation_per_mw']
+                    print(resource, mwh_per_mw)
 
                 if 'annual_generation_per_mw' in self.lcoe_dict[build_year][resource].keys():
                     
@@ -1374,11 +1435,12 @@ class LinearProgram(object):
             generation_by_resource[resource] = summed_gen
 
         for resource in self.nondisp.index:
-            profile_max = max(self.profiles[resource])
-            summed_gen = sum(self.profiles[resource]) / profile_max
-            capacity = self.capacity_vars[resource][build_year].solution_value()
-            gen = summed_gen * capacity
-            generation_by_resource[resource] = gen
+            if resource in self.capacity_vars.keys():
+                profile_max = max(self.profiles[resource])
+                summed_gen = sum(self.profiles[resource]) / profile_max
+                capacity = self.capacity_vars[resource][build_year].solution_value()
+                gen = summed_gen * capacity
+                generation_by_resource[resource] = gen
             
         #If storage can charge from sources outside portfolio, then net supply from storage should be counted towards total generation.
         for resource in self.storage_capacity_vars:

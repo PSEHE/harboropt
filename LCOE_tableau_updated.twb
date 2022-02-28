@@ -1,0 +1,1782 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20203.20.0801.1333                               -->
+<workbook original-version='18.1' source-build='2020.3.0 (20203.20.0801.1333)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <_.fcp.MarkAnimation.true...MarkAnimation />
+    <_.fcp.ObjectModelEncapsulateLegacy.true...ObjectModelEncapsulateLegacy />
+    <_.fcp.ObjectModelTableType.true...ObjectModelTableType />
+    <_.fcp.SchemaViewerObjectModel.true...SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='lcoe_per_mwh_2020_2035_1_31_22' inline='true' name='federated.1pbfstt17810p317cjogf07jy41a' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='lcoe_per_mwh_2020_2035_1_31_22' name='textscan.1gw329y03skodt14n89ap0qupzth'>
+            <connection class='textscan' directory='/Users/annelise_dillon/Desktop/Harbor/harboropt/data' filename='lcoe_per_mwh_2020_2035_1_31_22.csv' password='' server='' />
+          </named-connection>
+        </named-connections>
+        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='textscan.1gw329y03skodt14n89ap0qupzth' name='lcoe_per_mwh_2020_2035_1_31_22.csv' table='[lcoe_per_mwh_2020_2035_1_31_22#csv]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+            <column datatype='string' name='resource' ordinal='0' />
+            <column datatype='real' name='2020' ordinal='1' />
+            <column datatype='real' name='2021' ordinal='2' />
+            <column datatype='real' name='2022' ordinal='3' />
+            <column datatype='real' name='2023' ordinal='4' />
+            <column datatype='real' name='2024' ordinal='5' />
+            <column datatype='real' name='2025' ordinal='6' />
+            <column datatype='real' name='2026' ordinal='7' />
+            <column datatype='real' name='2027' ordinal='8' />
+            <column datatype='real' name='2028' ordinal='9' />
+            <column datatype='real' name='2029' ordinal='10' />
+            <column datatype='real' name='2030' ordinal='11' />
+            <column datatype='real' name='2031' ordinal='12' />
+            <column datatype='real' name='2032' ordinal='13' />
+            <column datatype='real' name='2033' ordinal='14' />
+            <column datatype='real' name='2034' ordinal='15' />
+            <column datatype='real' name='2035' ordinal='16' />
+            <column datatype='string' name='lcoe_type' ordinal='17' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.false...relation>
+        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='textscan.1gw329y03skodt14n89ap0qupzth' name='lcoe_per_mwh_2020_2035_1_31_22.csv' table='[lcoe_per_mwh_2020_2035_1_31_22#csv]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+            <column datatype='string' name='resource' ordinal='0' />
+            <column datatype='real' name='2020' ordinal='1' />
+            <column datatype='real' name='2021' ordinal='2' />
+            <column datatype='real' name='2022' ordinal='3' />
+            <column datatype='real' name='2023' ordinal='4' />
+            <column datatype='real' name='2024' ordinal='5' />
+            <column datatype='real' name='2025' ordinal='6' />
+            <column datatype='real' name='2026' ordinal='7' />
+            <column datatype='real' name='2027' ordinal='8' />
+            <column datatype='real' name='2028' ordinal='9' />
+            <column datatype='real' name='2029' ordinal='10' />
+            <column datatype='real' name='2030' ordinal='11' />
+            <column datatype='real' name='2031' ordinal='12' />
+            <column datatype='real' name='2032' ordinal='13' />
+            <column datatype='real' name='2033' ordinal='14' />
+            <column datatype='real' name='2034' ordinal='15' />
+            <column datatype='real' name='2035' ordinal='16' />
+            <column datatype='string' name='lcoe_type' ordinal='17' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.true...relation>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>resource</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[resource]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>resource</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2020</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2020]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2020</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2021</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2021]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2021</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2022</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2022]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2022</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2023</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2023]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2023</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2024</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2024]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2024</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2025</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2025]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2025</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2026</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2026]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2026</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2027</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2027]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2027</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2028</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2028]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2028</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2029</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2029]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2029</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2030</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2030]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2030</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2031</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2031]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2031</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2032</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2032]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2032</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2033</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2033]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2033</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2034</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2034]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2034</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2035</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[2035]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>2035</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>lcoe_type</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[lcoe_type]</local-name>
+            <parent-name>[lcoe_per_mwh_2020_2035_1_31_22.csv]</parent-name>
+            <remote-alias>lcoe_type</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <_.fcp.ObjectModelTableType.true...column caption='lcoe_per_mwh_2020_2035_1_31_22.csv' datatype='table' name='[__tableau_internal_object_id__].[lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198]' role='measure' type='quantitative' />
+      <column datatype='string' name='[resource (group)]' role='dimension' type='nominal'>
+        <calculation class='categorical-bin' column='[resource]' new-bin='true'>
+          <bin default-name='false' value='&quot;DR Shed&quot;'>
+            <value>&quot;ci_shed_nonwatersystem&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Cooking (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.Hotel.Cooking&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.Cooking&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.Cooking&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.Cooking&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Cooling (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.Cooling&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.Cooling&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Heating (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.Heating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.Heating&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Indoor Lighting (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.IndoorLightingEff&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.IndoorLightingEff&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Office Equipment (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.OfficeEquipment&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.OfficeEquipment&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Outdoor Lighting (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.OutdoorLighting&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.OutdoorLighting&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Refrigeration (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.Refrigeration&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.Refrigeration&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Residential Multifamily&quot;'>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.CoolingEff&quot;</value>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.Dryer&quot;</value>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.Heating&quot;</value>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.Refrigerator&quot;</value>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.ResLightingEff&quot;</value>
+            <value>&quot;FCZ7.Residential.MULTIFAMILY.WaterHeating&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Residential Singlefamily&quot;'>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;</value>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;</value>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;</value>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;</value>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;</value>
+            <value>&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Ventilation (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.Ventilation&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.Ventilation&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;EE Water Heating (Commercial)&quot;'>
+            <value>&quot;FCZ7.Commercial.College.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Food.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Health Care.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Miscellaneous.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Office.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Restaurant.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Retail.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.School.WaterHeating&quot;</value>
+            <value>&quot;FCZ7.Commercial.Warehouse.WaterHeating&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;Gas&quot;'>
+            <value>&quot;gas_ct&quot;</value>
+            <value>&quot;gas_harbor&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;Solar&quot;'>
+            <value>&quot;solar_rooftop_ci&quot;</value>
+            <value>&quot;solar_rooftop_residentialMF&quot;</value>
+            <value>&quot;solar_rooftop_residentialSF&quot;</value>
+            <value>&quot;utility_solar_outofbasin&quot;</value>
+          </bin>
+        </calculation>
+      </column>
+      <column datatype='string' name='[resource]' role='dimension' type='nominal'>
+        <aliases>
+          <alias key='&quot;ci_shed_nonwatersystem&quot;' value='DR Shed' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.Cooking&quot;' value='EE Cooking (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.Cooling&quot;' value='EE Cooling (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.Heating&quot;' value='EE Heating (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;' value='EE Indoor Lighting (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;' value='EE Office Equipment (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;' value='EE Outdoor Lighting (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;' value='EE Refrigeration (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.Ventilation&quot;' value='EE Ventilation (Comm)' />
+          <alias key='&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;' value='EE Water Heating (Comm)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;' value='EE Cooling (Res)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;' value='EE Dryer (Res)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;' value='EE Heating (Res)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;' value='EE Refrigerator (Res)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;' value='EE Lighting (Res)' />
+          <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;' value='EE Water Heating (Res)' />
+          <alias key='&quot;gas_ct&quot;' value='New Gas (CT)' />
+          <alias key='&quot;gas_harbor&quot;' value='Harbor (no capex)' />
+          <alias key='&quot;solar_rooftop_ci&quot;' value='Rooftop Solar (Comm)' />
+          <alias key='&quot;solar_rooftop_residentialMF&quot;' value='Rooftop Solar (Res MF)' />
+          <alias key='&quot;solar_rooftop_residentialSF&quot;' value='Rooftop Solar (Res SF)' />
+          <alias key='&quot;utility_solar_outofbasin&quot;' value='Utility Solar' />
+        </aliases>
+      </column>
+      <column-instance column='[resource]' derivation='None' name='[none:resource:nk]' pivot='key' type='nominal' />
+      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[resource (group)]' type='palette'>
+            <map to='#499894'>
+              <bucket>&quot;EE Residential Multifamily&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;DR Shed&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;EE Indoor Lighting (Commercial)&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;Gas&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;EE Residential Singlefamily&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;EE Office Equipment (Commercial)&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;EE Cooking (Commercial)&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;EE Outdoor Lighting (Commercial)&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;Solar&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;EE Ventilation (Commercial)&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;EE Refrigeration (Commercial)&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;EE Cooling (Commercial)&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;EE Water Heating (Commercial)&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;EE Heating (Commercial)&quot;</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:resource:nk]' type='palette'>
+            <map to='#499894'>
+              <bucket>&quot;FCZ7.Commercial.College.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>&quot;FCZ7.Commercial.Office.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>&quot;FCZ7.Commercial.Retail.Heating&quot;</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>&quot;solar_rooftop_residentialMF&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;ci_shed_nonwatersystem&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.Heating&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;FCZ7.Commercial.School.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Commercial.College.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Commercial.Office.Heating&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.Cooking&quot;</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;FCZ7.Commercial.Food.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.Ventilation&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.Heating&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;FCZ7.Commercial.Retail.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;FCZ7.Commercial.Food.Cooling&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;FCZ7.Commercial.Office.Ventilation&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;FCZ7.Commercial.Retail.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>&quot;solar_rooftop_residentialSF&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;FCZ7.Commercial.College.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.Cooking&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;FCZ7.Commercial.Office.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.Ventilation&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.Cooling&quot;</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>&quot;gas_ct&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.Heating&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;FCZ7.Commercial.School.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Commercial.College.Cooling&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.Ventilation&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Commercial.School.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;FCZ7.Commercial.Food.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.Heating&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;FCZ7.Commercial.School.Cooling&quot;</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.Refrigerator&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;FCZ7.Commercial.College.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.Cooling&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;FCZ7.Commercial.Office.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.Heating&quot;</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>&quot;gas_harbor&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;FCZ7.Commercial.Food.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;FCZ7.Commercial.Retail.Ventilation&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.CoolingEff&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;FCZ7.Commercial.Food.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.Cooking&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;FCZ7.Commercial.Retail.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.Dryer&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.Cooling&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.Ventilation&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;FCZ7.Commercial.School.Heating&quot;</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.ResLightingEff&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.Cooling&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;FCZ7.Commercial.School.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;FCZ7.Commercial.Food.Heating&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;FCZ7.Commercial.Office.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;FCZ7.Commercial.Retail.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;utility_solar_outofbasin&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;FCZ7.Commercial.College.Ventilation&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.Heating&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;FCZ7.Commercial.Office.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;FCZ7.Commercial.Retail.Cooling&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>&quot;solar_rooftop_ci&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Commercial.College.Heating&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.OfficeEquipment&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Commercial.School.Ventilation&quot;</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;FCZ7.Commercial.Food.Ventilation&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;FCZ7.Commercial.Miscellaneous.Cooling&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;FCZ7.Commercial.School.Cooking&quot;</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>&quot;FCZ7.Residential.MULTIFAMILY.Heating&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;FCZ7.Commercial.Food.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;FCZ7.Commercial.Refrigerated Warehouse.Cooling&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;FCZ7.Commercial.Retail.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>&quot;FCZ7.Commercial.Warehouse.Ventilation&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Commercial.College.IndoorLightingEff&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Commercial.Health Care.Ventilation&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Commercial.Office.Cooling&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Commercial.Restaurant.OutdoorLighting&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Commercial.School.WaterHeating&quot;</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+        <objects>
+          <object caption='lcoe_per_mwh_2020_2035_1_31_22.csv' id='lcoe_per_mwh_2020_2035_1_31_22.csv_236DE278A3614FB8A9BB719F74F5B198'>
+            <properties context=''>
+              <relation connection='textscan.1gw329y03skodt14n89ap0qupzth' name='lcoe_per_mwh_2020_2035_1_31_22.csv' table='[lcoe_per_mwh_2020_2035_1_31_22#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='string' name='resource' ordinal='0' />
+                  <column datatype='real' name='2020' ordinal='1' />
+                  <column datatype='real' name='2021' ordinal='2' />
+                  <column datatype='real' name='2022' ordinal='3' />
+                  <column datatype='real' name='2023' ordinal='4' />
+                  <column datatype='real' name='2024' ordinal='5' />
+                  <column datatype='real' name='2025' ordinal='6' />
+                  <column datatype='real' name='2026' ordinal='7' />
+                  <column datatype='real' name='2027' ordinal='8' />
+                  <column datatype='real' name='2028' ordinal='9' />
+                  <column datatype='real' name='2029' ordinal='10' />
+                  <column datatype='real' name='2030' ordinal='11' />
+                  <column datatype='real' name='2031' ordinal='12' />
+                  <column datatype='real' name='2032' ordinal='13' />
+                  <column datatype='real' name='2033' ordinal='14' />
+                  <column datatype='real' name='2034' ordinal='15' />
+                  <column datatype='real' name='2035' ordinal='16' />
+                  <column datatype='string' name='lcoe_type' ordinal='17' />
+                </columns>
+              </relation>
+            </properties>
+          </object>
+        </objects>
+      </_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='lcoe_per_mwh_2020_2035_1_31_22' name='federated.1pbfstt17810p317cjogf07jy41a' />
+          </datasources>
+          <datasource-dependencies datasource='federated.1pbfstt17810p317cjogf07jy41a'>
+            <column datatype='real' name='[2020]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2021]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2022]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2023]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2024]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2025]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2026]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2027]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2028]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2029]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2030]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2031]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2032]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2033]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2034]' role='measure' type='quantitative' />
+            <column datatype='real' name='[2035]' role='measure' type='quantitative' />
+            <column datatype='string' name='[lcoe_type]' role='dimension' type='nominal' />
+            <column-instance column='[lcoe_type]' derivation='None' name='[none:lcoe_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[resource]' derivation='None' name='[none:resource:nk]' pivot='key' type='nominal' />
+            <column datatype='string' name='[resource (group)]' role='dimension' type='nominal'>
+              <calculation class='categorical-bin' column='[resource]' new-bin='true'>
+                <bin default-name='false' value='&quot;DR Shed&quot;'>
+                  <value>&quot;ci_shed_nonwatersystem&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Cooking (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.Hotel.Cooking&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.Cooking&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.Cooking&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.Cooking&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Cooling (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.Cooling&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.Cooling&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Heating (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.Heating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.Heating&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Indoor Lighting (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.IndoorLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.IndoorLightingEff&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Office Equipment (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.OfficeEquipment&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.OfficeEquipment&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Outdoor Lighting (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.OutdoorLighting&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.OutdoorLighting&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Refrigeration (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.Refrigeration&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.Refrigeration&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Residential Multifamily&quot;'>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.CoolingEff&quot;</value>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.Dryer&quot;</value>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.Heating&quot;</value>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.Refrigerator&quot;</value>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.ResLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Residential.MULTIFAMILY.WaterHeating&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Residential Singlefamily&quot;'>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;</value>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;</value>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;</value>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;</value>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;</value>
+                  <value>&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Ventilation (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.Ventilation&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.Ventilation&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;EE Water Heating (Commercial)&quot;'>
+                  <value>&quot;FCZ7.Commercial.College.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Food.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Health Care.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Miscellaneous.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Office.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Refrigerated Warehouse.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Restaurant.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Retail.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.School.WaterHeating&quot;</value>
+                  <value>&quot;FCZ7.Commercial.Warehouse.WaterHeating&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;Gas&quot;'>
+                  <value>&quot;gas_ct&quot;</value>
+                  <value>&quot;gas_harbor&quot;</value>
+                </bin>
+                <bin default-name='false' value='&quot;Solar&quot;'>
+                  <value>&quot;solar_rooftop_ci&quot;</value>
+                  <value>&quot;solar_rooftop_residentialMF&quot;</value>
+                  <value>&quot;solar_rooftop_residentialSF&quot;</value>
+                  <value>&quot;utility_solar_outofbasin&quot;</value>
+                </bin>
+              </calculation>
+            </column>
+            <column datatype='string' name='[resource]' role='dimension' type='nominal'>
+              <aliases>
+                <alias key='&quot;ci_shed_nonwatersystem&quot;' value='DR Shed' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.Cooking&quot;' value='EE Cooking (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.Cooling&quot;' value='EE Cooling (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.Heating&quot;' value='EE Heating (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;' value='EE Indoor Lighting (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;' value='EE Office Equipment (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;' value='EE Outdoor Lighting (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;' value='EE Refrigeration (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.Ventilation&quot;' value='EE Ventilation (Comm)' />
+                <alias key='&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;' value='EE Water Heating (Comm)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;' value='EE Cooling (Res)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;' value='EE Dryer (Res)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;' value='EE Heating (Res)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;' value='EE Refrigerator (Res)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;' value='EE Lighting (Res)' />
+                <alias key='&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;' value='EE Water Heating (Res)' />
+                <alias key='&quot;gas_ct&quot;' value='New Gas (CT)' />
+                <alias key='&quot;gas_harbor&quot;' value='Harbor (no capex)' />
+                <alias key='&quot;solar_rooftop_ci&quot;' value='Rooftop Solar (Comm)' />
+                <alias key='&quot;solar_rooftop_residentialMF&quot;' value='Rooftop Solar (Res MF)' />
+                <alias key='&quot;solar_rooftop_residentialSF&quot;' value='Rooftop Solar (Res SF)' />
+                <alias key='&quot;utility_solar_outofbasin&quot;' value='Utility Solar' />
+              </aliases>
+            </column>
+            <column-instance column='[2020]' derivation='Sum' name='[sum:2020:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2021]' derivation='Sum' name='[sum:2021:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2022]' derivation='Sum' name='[sum:2022:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2023]' derivation='Sum' name='[sum:2023:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2024]' derivation='Sum' name='[sum:2024:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2025]' derivation='Sum' name='[sum:2025:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2026]' derivation='Sum' name='[sum:2026:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2027]' derivation='Sum' name='[sum:2027:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2028]' derivation='Sum' name='[sum:2028:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2029]' derivation='Sum' name='[sum:2029:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2030]' derivation='Sum' name='[sum:2030:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2031]' derivation='Sum' name='[sum:2031:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2032]' derivation='Sum' name='[sum:2032:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2033]' derivation='Sum' name='[sum:2033:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2034]' derivation='Sum' name='[sum:2034:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[2035]' derivation='Sum' name='[sum:2035:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.1pbfstt17810p317cjogf07jy41a].[:Measure Names]'>
+            <groupfilter function='union' user:op='manual'>
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2020:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2021:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2022:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2023:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2024:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2025:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2026:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2027:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2028:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2029:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2030:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2031:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2032:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2033:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2034:qk]&quot;' />
+              <groupfilter function='member' level='[:Measure Names]' member='&quot;[federated.1pbfstt17810p317cjogf07jy41a].[sum:2035:qk]&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.1pbfstt17810p317cjogf07jy41a].[none:lcoe_type:nk]'>
+            <groupfilter function='member' level='[none:lcoe_type:nk]' member='&quot;no_emissions&quot;' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.1pbfstt17810p317cjogf07jy41a].[none:resource:nk]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;ci_shed_nonwatersystem&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.Cooking&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.Cooling&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.Heating&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.IndoorLightingEff&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.OfficeEquipment&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.OutdoorLighting&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.Refrigeration&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.Ventilation&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Commercial.Hotel.WaterHeating&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.CoolingEff&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.Dryer&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.Heating&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.Refrigerator&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.ResLightingEff&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;FCZ7.Residential.SINGLEFAMILY.WaterHeating&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;gas_ct&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;gas_harbor&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;solar_rooftop_ci&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;solar_rooftop_residentialMF&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;solar_rooftop_residentialSF&quot;' />
+              <groupfilter function='member' level='[none:resource:nk]' member='&quot;utility_solar_outofbasin&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.1pbfstt17810p317cjogf07jy41a].[resource (group)]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[resource (group)]' member='&quot;EE Cooling (Commercial)&quot;' />
+              <groupfilter function='member' level='[resource (group)]' member='&quot;EE Ventilation (Commercial)&quot;' />
+              <groupfilter function='member' level='[resource (group)]' member='&quot;EE Water Heating (Commercial)&quot;' />
+              <groupfilter function='member' level='[resource (group)]' member='&quot;Solar&quot;' />
+            </groupfilter>
+          </filter>
+          <slices>
+            <column>[federated.1pbfstt17810p317cjogf07jy41a].[:Measure Names]</column>
+            <column>[federated.1pbfstt17810p317cjogf07jy41a].[resource (group)]</column>
+            <column>[federated.1pbfstt17810p317cjogf07jy41a].[none:resource:nk]</column>
+            <column>[federated.1pbfstt17810p317cjogf07jy41a].[none:lcoe_type:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.1pbfstt17810p317cjogf07jy41a].[Multiple Values]' scope='rows' value='LCOE ($2018 / MWh)' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[federated.1pbfstt17810p317cjogf07jy41a].[:Measure Names]' value='62' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Line' />
+            <encodings>
+              <color column='[federated.1pbfstt17810p317cjogf07jy41a].[none:resource:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='pane'>
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.1pbfstt17810p317cjogf07jy41a].[Multiple Values]</rows>
+        <cols>[federated.1pbfstt17810p317cjogf07jy41a].[:Measure Names]</cols>
+      </table>
+      <simple-id uuid='{E5C01A92-1CB1-4B3C-8BF0-D8CA7C9C7253}' />
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='100'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card type='measures' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='283'>
+            <card param='[federated.1pbfstt17810p317cjogf07jy41a].[resource (group)]' type='filter' />
+            <card pane-specification-id='0' param='[federated.1pbfstt17810p317cjogf07jy41a].[none:resource:nk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[federated.1pbfstt17810p317cjogf07jy41a].[:Measure Names]</field>
+            <field>[federated.1pbfstt17810p317cjogf07jy41a].[none:lcoe_type:nk]</field>
+            <field>[federated.1pbfstt17810p317cjogf07jy41a].[none:resource:nk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{F49431DB-25F2-4E31-8D35-96E57ECBB568}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='384' name='Sheet 1' width='384'>
+      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
+      g7a2NoaGhli+fDmxWIzy8vL09zE2NsaqVavQNI0zZ84wMzNDSUkJruty7NgxDh48mP4te76Y
+      pkllZSWJRIIXXniBrVu3Mjo6SlVVFZqmUV5eTjQaJRwOU1FRQSwW43e/+x07duzA8zzefPNN
+      du3atSD//itXrsQ0TXp6euju7mb16tVMTExQWVmJpmmsWbOG4eHh9L3v6Oigv7+fiooKRkdH
+      +cMf/sBbb70176f+pX72HcfhyJEj1NfXMzU1RXl5ObquU1xcjOu6Wa/JF198kU2bNtHX10c8
+      HueFF17gyJEjRKPReW3rihUrCIfDXLx4kVOnTlFbW8vY2BirV69G0zTWrl3L0NAQFRUVhEIh
+      zp8/T3t7e1av5L333uMLX/jCDS0+ueUCACAajfLMM88QDofT3XhN0654M5+amuLXv/41paWl
+      fOUrX1nwHcdKKc6cOcPhw4d5+OGHqaioSLc1s81KKU6ePMnLL7/Mnj17KCsrW7A2pti2zcGD
+      B4nFYuzevTvre8gUi8U4cOAAmqbx4IMPopRiZGSEX/7yl2zcuJEdO3bMazt93+eVV16htbWV
+      vXv3Eg6Hr2inSm6Ee+mll+jp6eH73/8+oVAITdOwLIvi4mKGhobmNfyVUgwPD7N//362bt3K
+      9u3bgezVJKl/+4GBAX71q1+xc+dONm3axPvvv8/atWtRSuE4zry/Wfm+zzvvvMPx48d57LHH
+      sCwreyVJ8u++7/P6669z+vRp9u7di2VZfP/73+euu+5izZo1PP300+n5lvkyPj7Ok08+SXV1
+      Nffcc09W+2D2nqZek42Njdx55504jkNFRQVf/epXWb16Na+//vq8tlMpxfHjx3njjTd4/PHH
+      KSgouOo1vu/z7rvv8v777/P444+ny+ZMT08zMjJyw8NUt1wAKKU4fPgwO3fuTKdjaqwPgkmW
+      VPG5559/nnvvvZedO3emf+v65JNP0ucUpw6rmS9DQ0McP36cJ554gvLycgCWL1/OxYsXUUpx
+      /vx5Vq5cycDAACdOnOAv//IvF+XNXynFyy+/zKZNm/jKV76CrusYhoHjOLiui+M4TE9PE4lE
+      ePHFF9mxYwdf+tKX0r+ZHDx4kO985zts3Lhx3gP2ww8/RNd1du/eTSQSSb+ppyb2BgYGKCsr
+      491336WoqIiHHnqIcDiMUopwOMz27dv55je/ycDAwLy+Wfm+z8GDB9mzZw8NDQ1omkZpaSkD
+      AwMopRgfHycvLw/HcTh06BB79+6lrq4uXTtrenqa999/n8HBQU6fPj1v7QRobm5mfHycRx55
+      hPz8fDRNo7CwkOHhYZRS9PX1sXz5cj7++GNc1+W73/0ueXl56Xu6bNky6urqiEQi87phSinF
+      b3/7Wx544AG2bduWbmeqJz8zM5PeAXv5a7KiooJEIkFBQQE1NTXzvgiku7ub7u5ufvCDH1BU
+      VARASUkJg4ODKKX45JNPWLFiRbon++ijj2aFxLvvvnvDv/3DLTgJHI/H6erqwvd9Pv74Y0Kh
+      EHv27GHjxo386le/wrZt7r33XqLRKD09PRiGwbFjx8jPz+fhhx9Ov4guXbrEY489Nq9tbW1t
+      ZWpqit/+9rdAMJG6efNmnnrqKc6dO8f4+Dh//dd/zeuvv87MzAwHDx4EYMeOHUxOTnLu3Dm6
+      u7s5ePAgO3fupKamZl7a6TgOra2txGIxmpubAdi7dy/bt2/nySefBGD79u04jkNHRweu63Ly
+      5EkMw2DXrl309/fz2muvAVBeXs7Xvva1eQuCU6dOEQ6HOXDgAAD3338/X/ziF3nmmWcoLS1l
+      xYoVWJZFU1MTpaWlPPPMMwDcd999vPrqq5SUlJBIJCguLp7XUhkjIyMMDg7yyiuvAKQXIei6
+      zsGDB9OLEAYGBhgaGuLll18GoKqqivvuuy99/4aGhrj77rvnrZ0ATU1N6Z4dwF/8xV9w3333
+      ceDAAVasWEEoFKKkpIRTp06h63r6ui9/+cscPXoU3/fxPI8VK1bM6z2dmJigt7eXt99+G4DS
+      0lIeeOABysrKeOaZZ5iYmOChhx5idHSUvr6+rNfkV7/6VT788EOee+45Jicn+dKXvjRv7YTg
+      nk5MTPDss88C8Od//ufcfffdPP3005SXl+N5HpWVlRw9epSpqan0Pb333ntZsWIFfX19c7JI
+      4f8HfOW4EPRrOU8AAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>
