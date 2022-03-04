@@ -8,28 +8,10 @@ from ortools.linear_solver import pywraplp
 
 import utils
 
-##### TO-DO: 
-
-##### Storage and solar (separate) and solar+storage bill savings for residential MF and SF.
-##### Constrain DR to only be allowed in 4 months out of the year (June 15 to October 15)?
-##### Resource costs are currently valued out to the end of portfolio timespan, even if they would continue to operate after the portfolio timespan is over (ex. if they are built in 2029). How to value resources fairly after 2050?
-##### Change Harbor and new gas resource monetized emissions to WattTime values to align w/ marginal health damages data.
-##### For EE and solar and DR resources: Incorporate avoided transmission and distribution costs for energy generated to meet Harbor. 
-##### EE costs are nominal. Need to convert to 2018$.
-##### Incorporate paired resilient solar+storage systems based on REopt apartment building discussion. Incorporate resilient hubs.
-##### Diesel genset emissions: change code to read in diesel genset parameters rather than set as inputs. See notes from conversation with Patrick. Use updated dataset from Lisa Ramos. Need yearly fuel costs. Run REOpt using reference building to figure out paired solar + storage for replacing diesel gensets.
-
-
-#Nice-to-have:
-##### Build in additional step to excess energy valuation: Should valuation of excess energy change from marginal emissions to grid average emissions if used beyond local Harbor region? What LMP value should be used for the wider LADWP region? Need to limit max export capacity if value of excess energy extends beyond Harbor region.
-##### Include res & comm shift cooling demand response.
-
-
-
-        
+    
 class LinearProgram(object):
     
-    def __init__(self, solver_type = 'GLOP', demand_profile = pd.DataFrame(), max_excess_energy = pd.DataFrame(), caiso_lmp = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), profiles = pd.DataFrame(), ee_resource_potential = pd.DataFrame(), resources = pd.DataFrame(), storage = pd.DataFrame(), resource_potential = pd.DataFrame(), health_cost_emissions_la = pd.DataFrame(), res_hourly_tou_retail_rate = pd.DataFrame(), comm_hourly_tou_retail_rate = pd.DataFrame(), comm_annual_demand_charge_savings = pd.DataFrame(), mf_annual_demand_charge_savings = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = True, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility', bill_savings = False, demand_charge_savings_annual_comm_solar_plus_storage_per_mw_solar = 60000, demand_charge_savings_annual_comm_solarOnly_per_mw_solar = 30000, demand_charge_savings_annual_comm_storageOnly_per_mw_storage = 148000, ratio_solar_to_storage_comm = 5, a1_comm_weight_by_roofsqft = 0.14, a2_comm_weight_by_roofsqft = 0.86, a1_comm_weight_by_floorsqft = 0.01, a2_comm_weight_by_floorsqft = 0.99,transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):#wholesale_cost_electricity_mwh = 39.39, demand_hour_start = 0, demand_length_hours = 8762,gas_fuel_cost=4), avoided_marginal_generation_cost_per_mwh = 36.60, residentialSF_standard_retail_rate_kwh = 0.18, residentialMF_standard_retail_rate_kwh = 0.06:
+    def __init__(self, solver_type = 'GLOP', demand_profile = pd.DataFrame(), max_excess_energy = pd.DataFrame(), caiso_lmp = pd.DataFrame(), marginal_healthdamages = pd.DataFrame(), marginal_co2 = pd.DataFrame(), profiles = pd.DataFrame(), ee_resource_potential = pd.DataFrame(), resources = pd.DataFrame(), storage = pd.DataFrame(), resource_potential = pd.DataFrame(), health_cost_emissions_la = pd.DataFrame(), res_hourly_tou_retail_rate = pd.DataFrame(), comm_hourly_tou_retail_rate = pd.DataFrame(), EE_comm_annual_demand_charge_savings = pd.DataFrame(), EE_mf_annual_demand_charge_savings = pd.DataFrame(), selected_resource = 'all', initial_state_of_charge = 0, storage_lifespan = 15, portfolio_timespan = 30, storage_can_charge_from_grid = True, discount_rate = 0.03, cost=1, health_cost_range = 'HIGH', cost_projections = 'moderate', build_start_year =2020, harbor_retirement_year = 2029, ee_cost_type = 'utility', bill_savings = False, demand_charge_savings_annual_comm_solar_plus_storage_per_mw_solar = 60000, demand_charge_savings_annual_comm_solarOnly_per_mw_solar = 30000, demand_charge_savings_annual_comm_storageOnly_per_mw_storage = 148000, ratio_solar_to_storage_comm = 5, demand_charge_savings_annual_mf_solar_plus_storage_per_mw_solar = 43500, demand_charge_savings_annual_mf_solarOnly_per_mw_solar = 8700, demand_charge_savings_annual_mf_storageOnly_per_mw_storage = 148000, ratio_solar_to_storage_mf = 4, ratio_solar_to_storage_sf = 1, a1_comm_weight_by_roofsqft = 0.14, a2_comm_weight_by_roofsqft = 0.86, a1_comm_weight_by_floorsqft = 0.01, a2_comm_weight_by_floorsqft = 0.99, transmission_capex_cost_per_mw = 72138, transmission_annual_cost_per_mw = 8223, storage_resilience_incentive_per_kwh = 1000, resilient_storage_grid_fraction = 0.7, social_cost_carbon_short_ton = 46, diesel_genset_carbon_per_mw = 0, diesel_genset_pm25_per_mw = 0, diesel_genset_nox_per_mw = 0, diesel_genset_so2_per_mw = 0, diesel_genset_pm10_per_mw = 0, diesel_genset_fixed_cost_per_mw_year = 0, diesel_genset_mmbtu_per_mwh =0, diesel_genset_cost_per_mmbtu = 0, diesel_genset_run_hours_per_year = 0):
         
         #Test out each constraint.
         self.fulfill_demand_constraint = True
@@ -53,8 +35,8 @@ class LinearProgram(object):
         self.resources = resources
         self.res_hourly_tou_retail_rate = res_hourly_tou_retail_rate
         self.comm_hourly_tou_rate = comm_hourly_tou_retail_rate
-        self.comm_annual_demand_charge_savings = comm_annual_demand_charge_savings
-        self.mf_annual_demand_charge_savings = mf_annual_demand_charge_savings
+        self.EE_comm_annual_demand_charge_savings = EE_comm_annual_demand_charge_savings
+        self.EE_mf_annual_demand_charge_savings = EE_mf_annual_demand_charge_savings
         self.selected_resource = selected_resource
         if self.selected_resource != 'all':
             self.resources = self.resources[self.resources['resource']==self.selected_resource]
@@ -80,7 +62,15 @@ class LinearProgram(object):
         self.demand_charge_savings_annual_comm_solar_plus_storage_per_mw_solar = demand_charge_savings_annual_comm_solar_plus_storage_per_mw_solar
         self.demand_charge_savings_annual_comm_solarOnly_per_mw_solar = demand_charge_savings_annual_comm_solarOnly_per_mw_solar
         self.demand_charge_savings_annual_comm_storageOnly_per_mw_storage = demand_charge_savings_annual_comm_storageOnly_per_mw_storage
+        
+        self.demand_charge_savings_annual_mf_solar_plus_storage_per_mw_solar = demand_charge_savings_annual_mf_solar_plus_storage_per_mw_solar
+        self.demand_charge_savings_annual_mf_solarOnly_per_mw_solar = demand_charge_savings_annual_mf_solarOnly_per_mw_solar
+        self.demand_charge_savings_annual_mf_storageOnly_per_mw_storage = demand_charge_savings_annual_mf_storageOnly_per_mw_storage
+        
         self.ratio_solar_to_storage_comm = ratio_solar_to_storage_comm
+        self.ratio_solar_to_storage_mf = ratio_solar_to_storage_mf
+        self.ratio_solar_to_storage_sf = ratio_solar_to_storage_sf
+        
         self.transmission_capex_cost_per_mw = transmission_capex_cost_per_mw
         self.transmission_annual_cost_per_mw = transmission_annual_cost_per_mw
         self.ee_cost_type = ee_cost_type
@@ -253,11 +243,11 @@ class LinearProgram(object):
                               'FCZ7.Commercial.Miscellaneous.Cooling']
                         
                         if resource == 'FCZ7.Commercial.Restaurant.Cooling' or 'FCZ7.Commercial.Miscellaneous.Cooling':
-                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac_yearly_peak')].sum()['demand_charge_savings_per_mw']
+                            demand_charge_savings_mw_year = self.EE_comm_annual_demand_charge_savings[self.EE_comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac_yearly_peak')].sum()['demand_charge_savings_per_mw']
                             fixed_mw = fixed_mw - demand_charge_savings_mw_year
                             
                         if resource == 'FCZ7.Commercial.Restaurant.Refrigeration':
-                            demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration_yearly_peak')].sum()['demand_charge_savings_per_mw']
+                            demand_charge_savings_mw_year = self.EE_comm_annual_demand_charge_savings[self.EE_comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration_yearly_peak')].sum()['demand_charge_savings_per_mw']
                             fixed_mw = fixed_mw - demand_charge_savings_mw_year
                                         
                         #Large commercial buildings incur monthly demand charges based on yearly peak, monthly peak in high peak pricing period, and monthly peak in low peak pricing period. Get yearly demand charge savings (summing savings from yearly and monthly peak reductions) for large comm cooling and refrigeration measures. Subtract this value from fixed costs ($/MW) before extrapolating costs.  
@@ -266,12 +256,12 @@ class LinearProgram(object):
                         
                         if all(x in resource for x in comm_cooling_strings):
                             if not resource in small_commercial_buildings:
-                                demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac')].sum()['demand_charge_savings_per_mw']
+                                demand_charge_savings_mw_year = self.EE_comm_annual_demand_charge_savings[self.EE_comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac')].sum()['demand_charge_savings_per_mw']
                                 fixed_mw = fixed_mw - demand_charge_savings_mw_year
                             
                         if all(x in resource for x in comm_refrig_strings):
                             if not resource in small_commercial_buildings:
-                                demand_charge_savings_mw_year = self.comm_annual_demand_charge_savings[self.comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration')].sum()['demand_charge_savings_per_mw']
+                                demand_charge_savings_mw_year = self.EE_comm_annual_demand_charge_savings[self.EE_comm_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration')].sum()['demand_charge_savings_per_mw']
                                 fixed_mw = fixed_mw - demand_charge_savings_mw_year
                         
                         #Residential MF buildings incur monthly demand charges based on yearly peak and monthly peak. Get yearly demand charge savings (summing savings from yearly and monthly peak reductions) for res MF cooling, refrigeration, and lighting EE measures. Subtract this value from fixed costs ($/MW) before extrapolating costs. 
@@ -281,25 +271,33 @@ class LinearProgram(object):
                         mf_refrig_strings = ['FCZ7','MULTIFAMILY','Refrigerator']
 
                         if all(x in resource for x in mf_lighting_strings):
-                            demand_charge_savings_mw_year = self.mf_annual_demand_charge_savings[self.mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('lighting')].sum()['demand_charge_savings_per_mw']
+                            demand_charge_savings_mw_year = self.EE_mf_annual_demand_charge_savings[self.EE_mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('lighting')].sum()['demand_charge_savings_per_mw']
                             fixed_mw = fixed_mw - demand_charge_savings_mw_year
                         
                         if all(x in resource for x in mf_cooling_strings):
-                            demand_charge_savings_mw_year = self.mf_annual_demand_charge_savings[self.mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac')].sum()['demand_charge_savings_per_mw']
+                            demand_charge_savings_mw_year = self.EE_mf_annual_demand_charge_savings[self.EE_mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('hvac')].sum()['demand_charge_savings_per_mw']
                             fixed_mw = fixed_mw - demand_charge_savings_mw_year
                             
                         if all(x in resource for x in mf_refrig_strings):
-                            demand_charge_savings_mw_year = self.mf_annual_demand_charge_savings[self.mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration')].sum()['demand_charge_savings_per_mw']
+                            demand_charge_savings_mw_year = self.EE_mf_annual_demand_charge_savings[self.EE_mf_annual_demand_charge_savings['resource_peakperiod'].str.contains('refrigeration')].sum()['demand_charge_savings_per_mw']
                             fixed_mw = fixed_mw - demand_charge_savings_mw_year
                             
                             
-                        #Incorporate demand charge savings for comm solar+storage systems (savings per mw solar built of solar+storage system) and for comm solar without storage.
+                        #Incorporate demand charge savings for comm and res multi-family solar+storage systems (savings per mw solar built of solar+storage system) and for comm solar without storage.
                         if resource == 'solar_rooftop_ci_solarStorage':
                             bill_savings_mw_year = self.demand_charge_savings_annual_comm_solar_plus_storage_per_mw_solar
                             fixed_mw = fixed_mw - bill_savings_mw_year
                         if resource == 'solar_rooftop_ci_solarOnly':
                             bill_savings_mw_year = self.demand_charge_savings_annual_comm_solarOnly_per_mw_solar
                             fixed_mw = fixed_mw - bill_savings_mw_year
+                            
+                        if resource == 'solar_rooftop_residentialMF_solarStorage':
+                            bill_savings_mw_year = self.demand_charge_savings_annual_mf_solar_plus_storage_per_mw_solar
+                            fixed_mw = fixed_mw - bill_savings_mw_year
+                        if resource == 'solar_rooftop_residentialMF_solarOnly':
+                            bill_savings_mw_year = self.demand_charge_savings_annual_mf_solarOnly_per_mw_solar
+                            fixed_mw = fixed_mw - bill_savings_mw_year
+                            
                                                    
                     #Extrapolate fixed costs out to end of portfolio timespan and discount back to build_start_year.
                     fixed_mw_extrapolated = fixed_mw * self.extrapolate_then_discount[year] * discount_factor
@@ -1084,19 +1082,17 @@ class LinearProgram(object):
                         if self.utility_storage_limit_constraint == True:
                             utility_storage_limit.SetCoefficient(capacity, 1)
                      
-                    #Need diff ratio for residential
                     elif resource == 'storage_residentialSF_4hr_solarStorage':
                         if self.residential_storage_tied_to_solar_SF_constraint == True:
-                            self.residential_storage_tied_to_solar_SF.SetCoefficient(capacity, -self.ratio_solar_to_storage_comm)
+                            self.residential_storage_tied_to_solar_SF.SetCoefficient(capacity, -1/self.ratio_solar_to_storage_sf)
                          
-                    #Need diff ratio for residential
                     elif resource == 'storage_residentialMF_4hr_solarStorage':
                         if self.residential_storage_tied_to_solar_MF_constraint == True:
-                            self.residential_storage_tied_to_solar_MF.SetCoefficient(capacity, -self.ratio_solar_to_storage_comm)
+                            self.residential_storage_tied_to_solar_MF.SetCoefficient(capacity, -1/self.ratio_solar_to_storage_mf)
                             
                     elif resource == 'storage_ci_4hr_solarStorage':
                         if self.commercial_storage_tied_to_solar_constraint == True:
-                            self.commercial_storage_tied_to_solar.SetCoefficient(capacity, -self.ratio_solar_to_storage_comm)
+                            self.commercial_storage_tied_to_solar.SetCoefficient(capacity, -1/self.ratio_solar_to_storage_comm)
                             
                     
                 storage_capacity_vars[resource] = storage_capacity_by_build_year
