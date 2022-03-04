@@ -1,8 +1,8 @@
 ﻿resource,potential_type,la100_scenario,load_projection,coincident_type,region,cumulative?,units,2020,2025,2030,2035,2040,2045
 res_shift_space_cooling,deployment,na,moderate,end_use,ladwp,cumulative,MW,75,225,362,467,480,477
 ci_shift_space_cooling,deployment,na,moderate,end_use,ladwp,cumulative,MW,0,48,83,122,130,138
-ci_shed_nonwatersystem,deployment,na,moderate,end_use,ladwp,cumulative,MW,33,102,170,178,180,190
-ci_shed_nonwatersystem,deployment,na,moderate,system,ladwp,cumulative,MW,32,95,155,162,163,172
+ci_shed,deployment,na,moderate,end_use,ladwp,cumulative,MW,33,102,170,178,180,190
+ci_shed,deployment,na,moderate,system,ladwp,cumulative,MW,32,95,155,162,163,172
 res_shift_space_cooling,deployment,na,moderate,na,ladwp,cumulative,GWh,0,10,49,80,102,121
 ci_shift_space_cooling,deployment,na,moderate,na,ladwp,cumulative,GWh,0,53,91,135,146,156
 solar_nonrooftop_utility_inbasin,deployment,ltd_transmission,moderate,na,rsCrsQrsHall,cumulative,MW,,,,,,13.08

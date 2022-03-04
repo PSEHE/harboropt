@@ -1,0 +1,7 @@
+,resource_peakperiod,demand_charge_savings_per_mw
+5,hvac_yearly_peak_demand_charge_mw,30873.6
+6,refrigeration_yearly_peak_demand_charge_mw,30873.6
+7,refrigeration_high_peak_demand_charge_mw,37440.0
+8,hvac_high_peak_demand_charge_mw,26728.800000000003
+9,refrigeration_low_peak_demand_charge_mw,7200.0
+10,hvac_low_peak_demand_charge_mw,6552.0

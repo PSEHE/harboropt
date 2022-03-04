@@ -1,4 +1,4 @@
-,day,hour_starting,period,month,rate,units
+,day,hour_starting,period,month,rate_sf,units
 0,tues,0,base,jan_mar,174.45119999999997,2018$/MWh
 1,tues,1,base,jan_mar,174.45119999999997,2018$/MWh
 2,tues,2,base,jan_mar,174.45119999999997,2018$/MWh

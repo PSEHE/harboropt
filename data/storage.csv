@@ -2,7 +2,10 @@ resource,resilient,legacy,efficiency,storage_duration (hrs)
 storage_utility_2hr,n,n,0.85,2
 storage_utility_4hr,n,n,0.85,4
 storage_utility_6hr,n,n,0.85,6
-storage_residentialSF_4hr,n,n,0.85,4
-storage_residentialMF_4hr,n,n,0.85,4
-storage_ci_4hr,n,n,0.85,4
+storage_residentialSF_storageOnly_4hr,n,n,0.85,4
+storage_residentialSF_solarStorage_4hr,n,n,0.85,4
+storage_residentialMF_storageOnly_4hr,n,n,0.85,4
+storage_residentialMF_solarStorage_4hr,n,n,0.85,4
+storage_ci_storageOnly_4hr,n,n,0.85,4
+storage_ci_solarStorage_4hr,n,n,0.85,4
 diesel_genset_replacement_storage_4hr,y,n,0.85,4
