@@ -131,10 +131,12 @@ class LinearProgram(object):
         if self.commercial_storage_tied_to_solar_constraint == True:
             self.commercial_storage_tied_to_solar = self.solver.Constraint(0, 0)
 
+
         self.capacity_vars = self._initialize_capacity_by_resource(self.build_years)
         
         self.storage = storage
         self.storage_capacity_vars = self._initialize_storage_capacity_vars(self.build_years)
+        
 
         self.disp = self.resources.loc[self.resources['dispatchable'] == 'y']
         self.nondisp = self.resources.loc[self.resources['dispatchable'] == 'n']
@@ -978,12 +980,15 @@ class LinearProgram(object):
         
 #         return storage
     
-
     
     def _initialize_capacity_by_resource(self, build_years):
+        
         capacity_by_resource = {}
+        resource_max_constraints = {}
         
         for resource in self.resources.index:
+            
+            resource_max_constraints[resource]={}
             
             capacity_by_build_year = []
             
@@ -1013,33 +1018,80 @@ class LinearProgram(object):
                         
                 else:
                     resource_inds = self.resource_potential['resource']==resource
+                    
+                    #Need to connect both solar+storage systems and solar only systems to the same solar resource potential estimates (the sum of their capacities should be limited to resource potential max in that year).
+                    if 'solar_rooftop_ci' in resource:
+                        resource_inds = self.resource_potential['resource']=='solar_rooftop_ci'
+                    if 'solar_rooftop_residentialSF' in resource:
+                        resource_inds = self.resource_potential['resource']=='solar_rooftop_residentialSF'
+                    if 'solar_rooftop_residentialMF' in resource:
+                        resource_inds = self.resource_potential['resource']=='solar_rooftop_residentialMF'
+                    
                     for year in range(build_years):
-                        
+                    
                         calendar_year = self.build_start_year + year
                         capacity = self.solver.NumVar(0, self.solver.infinity(), str(resource)+ '_' + str(year))
                         capacity_by_build_year.append(capacity)
                         
                         if resource_inds.sum()>0:
                             resource_max_mw = self.resource_potential.loc[resource_inds, str(calendar_year)].item()
-                            resource_capacity_constraint = self.solver.Constraint(0, resource_max_mw)
-                            for i, var in enumerate(capacity_by_build_year):
-                                resource_capacity_constraint.SetCoefficient(var, 1)
-
-                    #Tie amount of storage built to amount of solar built for solar+storage systems.
-                    if resource == 'solar_rooftop_residentialSF_solarStorage':
-                        if self.residential_storage_tied_to_solar_SF_constraint == True:
-                            self.residential_storage_tied_to_solar_SF.SetCoefficient(capacity, 1)
-
-                    if resource == 'solar_rooftop_residentialMF_solarStorage':
-                        if self.residential_storage_tied_to_solar_MF_constraint == True:
-                            self.residential_storage_tied_to_solar_MF.SetCoefficient(capacity, 1)
                             
-                    if resource == 'solar_rooftop_ci_solarStorage':
-                        if self.commercial_storage_tied_to_solar_constraint == True:
-                            self.commercial_storage_tied_to_solar.SetCoefficient(capacity, 1)
+                            #For BTM solar resources, add the capacity of solar only and solar+storage systems within each building type to the same resource potential constraint in each year. Ex. Standalone solar and solar+storage on commercial buildings should together be limited by the max resource potential for commercial solar in a given year.
+                            if 'solar_rooftop_ci' in resource:
+                                resource_dict = [val for key,val in resource_max_constraints.items() if 'solar_rooftop_ci' in key]
+                                if any(resource_dict[0].keys()):
+                                    
+                                    constraint = resource_dict[0][year]
+                                    for i, var in enumerate(capacity_by_build_year):
+                                        constraint.SetCoefficient(var, 1)
+                                else:
+                                    resource_capacity_constraint = self.solver.Constraint(0, resource_max_mw)
+                                    resource_max_constraints[resource][year] = resource_capacity_constraint
+                                    
+                            elif 'solar_rooftop_residentialSF' in resource:
+                                resource_dict = [val for key,val in resource_max_constraints.items() if 'solar_rooftop_residentialSF' in key]
+                                
+                                if any(resource_dict[0].keys()):
+                                    constraint = resource_dict[0][year]
+                                    for i, var in enumerate(capacity_by_build_year):
+                                        constraint.SetCoefficient(var, 1)
+                                else:
+                                    resource_capacity_constraint = self.solver.Constraint(0, resource_max_mw)
+                                    resource_max_constraints[resource][year] = resource_capacity_constraint
+                                 
+                             
+                            elif 'solar_rooftop_residentialMF' in resource:
+                                resource_dict = [val for key,val in resource_max_constraints.items() if 'solar_rooftop_residentialMF' in key]
+                                
+                                if any(resource_dict[0].keys()):
+                                    constraint = resource_dict[0][year]
+                                    for i, var in enumerate(capacity_by_build_year):
+                                        constraint.SetCoefficient(var, 1)
+                                else:
+                                    resource_capacity_constraint = self.solver.Constraint(0, resource_max_mw)
+                                    resource_max_constraints[resource][year] = resource_capacity_constraint
+                             
+                            else:
+                                resource_capacity_constraint = self.solver.Constraint(0, resource_max_mw)
+                                resource_max_constraints[resource][year] = resource_capacity_constraint
                             
 
+                        #Tie amount of storage built to amount of solar built for solar+storage systems.
+                        #*** These constraints are initialized only once in code above (not every year). So it only ties solar and storage together across all years, not in individual years. May consider rewriting code to include a constraint in every year that ties solar+storage together in each year.
+                        if resource == 'solar_rooftop_residentialSF_solarStorage':
+                            if self.residential_storage_tied_to_solar_SF_constraint == True:
+                                self.residential_storage_tied_to_solar_SF.SetCoefficient(capacity, 1)
+
+                        if resource == 'solar_rooftop_residentialMF_solarStorage':
+                            if self.residential_storage_tied_to_solar_MF_constraint == True:
+                                self.residential_storage_tied_to_solar_MF.SetCoefficient(capacity, 1)
+
+                        if resource == 'solar_rooftop_ci_solarStorage':
+                            if self.commercial_storage_tied_to_solar_constraint == True:
+                                self.commercial_storage_tied_to_solar.SetCoefficient(capacity, 1)
+                            
                     capacity_by_resource[resource] = capacity_by_build_year
+            
             else:
                 #If resource is legacy resource, capacity "built" in year 0 of build years must be less than or equal to existing capacity. If build_start_year is the same as Harbor retirement year, capacity must be 0. Built capacity in subsequent build years must be 0.
                 
